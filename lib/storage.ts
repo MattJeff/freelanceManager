@@ -49,6 +49,7 @@ export const saveTodos = (todos: Todo[]): void => {
 };
 
 export const addTodo = (todo: Omit<Todo, 'id' | 'createdAt' | 'updatedAt' | 'subtasks'>): Todo => {
+  console.log('📝 [STORAGE] addTodo called with:', todo);
   const newTodo: Todo = {
     ...todo,
     id: generateId(),
@@ -59,13 +60,19 @@ export const addTodo = (todo: Omit<Todo, 'id' | 'createdAt' | 'updatedAt' | 'sub
   const todos = getTodos();
   todos.push(newTodo);
   saveTodos(todos);
+  console.log('✅ [STORAGE] Todo added successfully:', newTodo);
+  console.log('📊 [STORAGE] Total todos now:', todos.length);
   return newTodo;
 };
 
 export const updateTodo = (id: string, updates: Partial<Todo>): Todo | null => {
+  console.log('✏️ [STORAGE] updateTodo called - id:', id, 'updates:', updates);
   const todos = getTodos();
   const index = todos.findIndex(t => t.id === id);
-  if (index === -1) return null;
+  if (index === -1) {
+    console.error('❌ [STORAGE] Todo not found with id:', id);
+    return null;
+  }
 
   todos[index] = {
     ...todos[index],
@@ -73,14 +80,20 @@ export const updateTodo = (id: string, updates: Partial<Todo>): Todo | null => {
     updatedAt: new Date(),
   };
   saveTodos(todos);
+  console.log('✅ [STORAGE] Todo updated successfully:', todos[index]);
   return todos[index];
 };
 
 export const deleteTodo = (id: string): boolean => {
+  console.log('🗑️ [STORAGE] deleteTodo called - id:', id);
   const todos = getTodos();
   const filtered = todos.filter(t => t.id !== id);
-  if (filtered.length === todos.length) return false;
+  if (filtered.length === todos.length) {
+    console.error('❌ [STORAGE] Todo not found for deletion - id:', id);
+    return false;
+  }
   saveTodos(filtered);
+  console.log('✅ [STORAGE] Todo deleted successfully - Remaining:', filtered.length);
   return true;
 };
 
@@ -154,6 +167,7 @@ export const saveContacts = (contacts: Contact[]): void => {
 };
 
 export const addContact = (contact: Omit<Contact, 'id' | 'createdAt' | 'updatedAt'>): Contact => {
+  console.log('👤 [STORAGE] addContact called with:', contact);
   const newContact: Contact = {
     ...contact,
     id: generateId(),
@@ -163,13 +177,19 @@ export const addContact = (contact: Omit<Contact, 'id' | 'createdAt' | 'updatedA
   const contacts = getContacts();
   contacts.push(newContact);
   saveContacts(contacts);
+  console.log('✅ [STORAGE] Contact added successfully:', newContact);
+  console.log('📊 [STORAGE] Total contacts now:', contacts.length);
   return newContact;
 };
 
 export const updateContact = (id: string, updates: Partial<Contact>): Contact | null => {
+  console.log('✏️ [STORAGE] updateContact called - id:', id, 'updates:', updates);
   const contacts = getContacts();
   const index = contacts.findIndex(c => c.id === id);
-  if (index === -1) return null;
+  if (index === -1) {
+    console.error('❌ [STORAGE] Contact not found with id:', id);
+    return null;
+  }
 
   contacts[index] = {
     ...contacts[index],
@@ -177,14 +197,20 @@ export const updateContact = (id: string, updates: Partial<Contact>): Contact | 
     updatedAt: new Date(),
   };
   saveContacts(contacts);
+  console.log('✅ [STORAGE] Contact updated successfully:', contacts[index]);
   return contacts[index];
 };
 
 export const deleteContact = (id: string): boolean => {
+  console.log('🗑️ [STORAGE] deleteContact called - id:', id);
   const contacts = getContacts();
   const filtered = contacts.filter(c => c.id !== id);
-  if (filtered.length === contacts.length) return false;
+  if (filtered.length === contacts.length) {
+    console.error('❌ [STORAGE] Contact not found for deletion - id:', id);
+    return false;
+  }
   saveContacts(filtered);
+  console.log('✅ [STORAGE] Contact deleted successfully - Remaining:', filtered.length);
   return true;
 };
 
@@ -198,6 +224,7 @@ export const saveGoals = (goals: Goal[]): void => {
 };
 
 export const addGoal = (goal: Omit<Goal, 'id' | 'createdAt' | 'updatedAt'>): Goal => {
+  console.log('🎯 [STORAGE] addGoal called with:', goal);
   const newGoal: Goal = {
     ...goal,
     id: generateId(),
@@ -207,13 +234,19 @@ export const addGoal = (goal: Omit<Goal, 'id' | 'createdAt' | 'updatedAt'>): Goa
   const goals = getGoals();
   goals.push(newGoal);
   saveGoals(goals);
+  console.log('✅ [STORAGE] Goal added successfully:', newGoal);
+  console.log('📊 [STORAGE] Total goals now:', goals.length);
   return newGoal;
 };
 
 export const updateGoal = (id: string, updates: Partial<Goal>): Goal | null => {
+  console.log('✏️ [STORAGE] updateGoal called - id:', id, 'updates:', updates);
   const goals = getGoals();
   const index = goals.findIndex(g => g.id === id);
-  if (index === -1) return null;
+  if (index === -1) {
+    console.error('❌ [STORAGE] Goal not found with id:', id);
+    return null;
+  }
 
   goals[index] = {
     ...goals[index],
@@ -221,14 +254,20 @@ export const updateGoal = (id: string, updates: Partial<Goal>): Goal | null => {
     updatedAt: new Date(),
   };
   saveGoals(goals);
+  console.log('✅ [STORAGE] Goal updated successfully:', goals[index]);
   return goals[index];
 };
 
 export const deleteGoal = (id: string): boolean => {
+  console.log('🗑️ [STORAGE] deleteGoal called - id:', id);
   const goals = getGoals();
   const filtered = goals.filter(g => g.id !== id);
-  if (filtered.length === goals.length) return false;
+  if (filtered.length === goals.length) {
+    console.error('❌ [STORAGE] Goal not found for deletion - id:', id);
+    return false;
+  }
   saveGoals(filtered);
+  console.log('✅ [STORAGE] Goal deleted successfully - Remaining:', filtered.length);
   return true;
 };
 
@@ -242,6 +281,7 @@ export const savePosts = (posts: Post[]): void => {
 };
 
 export const addPost = (post: Omit<Post, 'id' | 'createdAt' | 'updatedAt'>): Post => {
+  console.log('📝 [STORAGE] addPost called with:', post);
   const newPost: Post = {
     ...post,
     id: generateId(),
@@ -251,13 +291,19 @@ export const addPost = (post: Omit<Post, 'id' | 'createdAt' | 'updatedAt'>): Pos
   const posts = getPosts();
   posts.push(newPost);
   savePosts(posts);
+  console.log('✅ [STORAGE] Post added successfully:', newPost);
+  console.log('📊 [STORAGE] Total posts now:', posts.length);
   return newPost;
 };
 
 export const updatePost = (id: string, updates: Partial<Post>): Post | null => {
+  console.log('✏️ [STORAGE] updatePost called - id:', id, 'updates:', updates);
   const posts = getPosts();
   const index = posts.findIndex(p => p.id === id);
-  if (index === -1) return null;
+  if (index === -1) {
+    console.error('❌ [STORAGE] Post not found with id:', id);
+    return null;
+  }
 
   posts[index] = {
     ...posts[index],
@@ -265,14 +311,20 @@ export const updatePost = (id: string, updates: Partial<Post>): Post | null => {
     updatedAt: new Date(),
   };
   savePosts(posts);
+  console.log('✅ [STORAGE] Post updated successfully:', posts[index]);
   return posts[index];
 };
 
 export const deletePost = (id: string): boolean => {
+  console.log('🗑️ [STORAGE] deletePost called - id:', id);
   const posts = getPosts();
   const filtered = posts.filter(p => p.id !== id);
-  if (filtered.length === posts.length) return false;
+  if (filtered.length === posts.length) {
+    console.error('❌ [STORAGE] Post not found for deletion - id:', id);
+    return false;
+  }
   savePosts(filtered);
+  console.log('✅ [STORAGE] Post deleted successfully - Remaining:', filtered.length);
   return true;
 };
 

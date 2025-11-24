@@ -84,9 +84,18 @@ export default function DailyPlanner() {
   }, []);
 
   const loadAll = () => {
-    setTodos(getTodos());
-    setPosts(getPosts());
-    setGoals(getGoals());
+    console.log('📅 [PLANNER] Loading all data for DailyPlanner...');
+    const loadedTodos = getTodos();
+    const loadedPosts = getPosts();
+    const loadedGoals = getGoals();
+    console.log('📅 [PLANNER] Loaded:', {
+      todos: loadedTodos.length,
+      posts: loadedPosts.length,
+      goals: loadedGoals.length
+    });
+    setTodos(loadedTodos);
+    setPosts(loadedPosts);
+    setGoals(loadedGoals);
   };
 
   // Filter items by selected date
@@ -130,6 +139,7 @@ export default function DailyPlanner() {
   // Todo CRUD
   const handleAddTodo = (e: React.FormEvent) => {
     e.preventDefault();
+    console.log('📅 [PLANNER] handleAddTodo called - editingId:', editingId);
 
     const todoData = {
       title: todoForm.title,
@@ -140,9 +150,13 @@ export default function DailyPlanner() {
       completed: false,
     };
 
+    console.log('📅 [PLANNER] Todo data:', todoData);
+
     if (editingId && formType === 'todo') {
+      console.log('📅 [PLANNER] Updating existing todo');
       updateTodo(editingId, todoData);
     } else {
+      console.log('📅 [PLANNER] Creating new todo');
       addTodo(todoData);
     }
 
@@ -179,6 +193,7 @@ export default function DailyPlanner() {
   // Post CRUD
   const handleAddPost = (e: React.FormEvent) => {
     e.preventDefault();
+    console.log('📅 [PLANNER] handleAddPost called - editingId:', editingId);
 
     const postData = {
       platform: postForm.platform,
@@ -187,9 +202,13 @@ export default function DailyPlanner() {
       published: false,
     };
 
+    console.log('📅 [PLANNER] Post data:', postData);
+
     if (editingId && formType === 'post') {
+      console.log('📅 [PLANNER] Updating existing post');
       updatePost(editingId, postData);
     } else {
+      console.log('📅 [PLANNER] Creating new post');
       addPost(postData);
     }
 
@@ -223,6 +242,7 @@ export default function DailyPlanner() {
   // Goal CRUD
   const handleAddGoal = (e: React.FormEvent) => {
     e.preventDefault();
+    console.log('📅 [PLANNER] handleAddGoal called - editingId:', editingId);
 
     const goalData = {
       title: goalForm.title,
@@ -235,9 +255,13 @@ export default function DailyPlanner() {
       completed: false,
     };
 
+    console.log('📅 [PLANNER] Goal data:', goalData);
+
     if (editingId && formType === 'goal') {
+      console.log('📅 [PLANNER] Updating existing goal');
       updateGoal(editingId, goalData);
     } else {
+      console.log('📅 [PLANNER] Creating new goal');
       addGoal(goalData);
     }
 
