@@ -1,0 +1,94 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model Todo {
+  id          String   @id @default(uuid())
+  title       String
+  description String?
+  priority    Priority @default(MEDIUM)
+  platform    Platform?
+  dueDate     DateTime?
+  completed   Boolean  @default(false)
+  subtasks    Json     @default("[]")
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+}
+
+model Contact {
+  id          String   @id @default(uuid())
+  name        String
+  email       String?
+  phone       String?
+  company     String?
+  platform    Platform
+  status      ContactStatus @default(ACTIVE)
+  notes       String?
+  lastContact DateTime?
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+}
+
+model Goal {
+  id          String   @id @default(uuid())
+  title       String
+  description String?
+  targetDate  DateTime
+  progress    Int      @default(0)
+  completed   Boolean  @default(false)
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+}
+
+model Post {
+  id          String   @id @default(uuid())
+  platform    Platform
+  content     String
+  scheduledFor DateTime?
+  published   Boolean  @default(false)
+  engagement  Json?
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+}
+
+model Analytics {
+  id          String   @id @default(uuid())
+  platform    Platform
+  metric      String
+  value       Float
+  date        DateTime @default(now())
+  createdAt   DateTime @default(now())
+}
+
+enum Priority {
+  LOW
+  MEDIUM
+  HIGH
+}
+
+enum Platform {
+  LINKEDIN
+  TWITTER
+  INSTAGRAM
+  FACEBOOK
+  TIKTOK
+  YOUTUBE
+  MALT
+  UPWORK
+  FIVERR
+  FREELANCER
+}
+
+enum ContactStatus {
+  ACTIVE
+  PENDING
+  CLOSED
+}
