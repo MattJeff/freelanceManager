@@ -328,26 +328,26 @@ export const deletePost = (id: string): boolean => {
   return true;
 };
 
-// ===== ANALYTICS FUNCTIONS =====
-export const getAnalytics = (): Analytics[] => {
-  return getFromStorage(STORAGE_KEYS.ANALYTICS, []);
-};
+// ===== ANALYTICS FUNCTIONS ===== (DÉSACTIVÉ - Non utilisé)
+// export const getAnalytics = (): Analytics[] => {
+//   return getFromStorage(STORAGE_KEYS.ANALYTICS, []);
+// };
 
-export const saveAnalytics = (analytics: Analytics[]): void => {
-  saveToStorage(STORAGE_KEYS.ANALYTICS, analytics);
-};
+// export const saveAnalytics = (analytics: Analytics[]): void => {
+//   saveToStorage(STORAGE_KEYS.ANALYTICS, analytics);
+// };
 
-export const addAnalytic = (analytic: Omit<Analytics, 'id' | 'createdAt'>): Analytics => {
-  const newAnalytic: Analytics = {
-    ...analytic,
-    id: generateId(),
-    createdAt: new Date(),
-  };
-  const analytics = getAnalytics();
-  analytics.push(newAnalytic);
-  saveAnalytics(analytics);
-  return newAnalytic;
-};
+// export const addAnalytic = (analytic: Omit<Analytics, 'id' | 'createdAt'>): Analytics => {
+//   const newAnalytic: Analytics = {
+//     ...analytic,
+//     id: generateId(),
+//     createdAt: new Date(),
+//   };
+//   const analytics = getAnalytics();
+//   analytics.push(newAnalytic);
+//   saveAnalytics(analytics);
+//   return newAnalytic;
+// };
 
 // ===== PLATFORM ACCOUNT FUNCTIONS =====
 export const getFreelancePlatformAccounts = (): Record<string, boolean> => {

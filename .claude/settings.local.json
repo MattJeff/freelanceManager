@@ -16,7 +16,9 @@
       "Bash(\"$file\")",
       "Bash(done)",
       "Bash(for file in components/DailyPlanner.tsx app/page.tsx)",
-      "Bash(app/page.tsx)"
+      "Bash(app/page.tsx)",
+      "Bash(lsof:*)",
+      "Bash(xargs kill:*)"
     ],
     "deny": [],
     "ask": []

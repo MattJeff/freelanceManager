@@ -6,7 +6,7 @@ import {
   CheckSquare,
   Users,
   Target,
-  BarChart3,
+  // BarChart3, // Analytics supprimé
   FileText,
   BookOpen,
   Briefcase,
@@ -15,7 +15,7 @@ import DailyPlanner from '@/components/DailyPlanner';
 import TodoManager from '@/components/TodoManager';
 import ContactsManager from '@/components/ContactsManager';
 import GoalsTracker from '@/components/GoalsTracker';
-import AnalyticsDashboard from '@/components/AnalyticsDashboard';
+// import AnalyticsDashboard from '@/components/AnalyticsDashboard'; // Analytics supprimé
 import ContentManager from '@/components/ContentManager';
 import TemplatesLibrary from '@/components/TemplatesLibrary';
 import FreelancePlatforms from '@/components/FreelancePlatforms';
@@ -25,7 +25,7 @@ type Tab =
   | 'todos'
   | 'contacts'
   | 'goals'
-  | 'analytics'
+  // | 'analytics' // Analytics supprimé
   | 'content'
   | 'templates'
   | 'platforms';
@@ -38,7 +38,7 @@ export default function Home() {
     { id: 'todos' as Tab, name: 'Taches', icon: CheckSquare },
     { id: 'contacts' as Tab, name: 'Contacts', icon: Users },
     { id: 'goals' as Tab, name: 'Objectifs', icon: Target },
-    { id: 'analytics' as Tab, name: 'Analytics', icon: BarChart3 },
+    // { id: 'analytics' as Tab, name: 'Analytics', icon: BarChart3 }, // Analytics supprimé
     { id: 'content' as Tab, name: 'Contenu', icon: FileText },
     { id: 'templates' as Tab, name: 'Templates', icon: BookOpen },
     { id: 'platforms' as Tab, name: 'Plateformes', icon: Briefcase },
@@ -54,8 +54,8 @@ export default function Home() {
         return <ContactsManager />;
       case 'goals':
         return <GoalsTracker />;
-      case 'analytics':
-        return <AnalyticsDashboard />;
+      // case 'analytics': // Analytics supprimé
+      //   return <AnalyticsDashboard />;
       case 'content':
         return <ContentManager />;
       case 'templates':
@@ -85,7 +85,7 @@ export default function Home() {
         {/* Navigation */}
         <nav className="mb-8">
           <div className="bg-white dark:bg-gray-800 rounded-2xl shadow-lg p-2">
-            <div className="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-8 gap-2">
+            <div className="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-7 gap-2">
               {tabs.map((tab) => {
                 const Icon = tab.icon;
                 const isActive = activeTab === tab.id;

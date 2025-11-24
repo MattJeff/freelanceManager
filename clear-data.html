@@ -1,0 +1,277 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Nettoyage des Données - Freelance Manager</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: linear-gradient(135deg, #FFF7ED 0%, #FFFFFF 50%, #FEF3C7 100%);
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+        }
+
+        .container {
+            background: white;
+            border-radius: 24px;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.1);
+            padding: 40px;
+            max-width: 600px;
+            width: 100%;
+        }
+
+        h1 {
+            background: linear-gradient(135deg, #EA580C 0%, #EAB308 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            font-size: 32px;
+            margin-bottom: 10px;
+        }
+
+        .subtitle {
+            color: #6B7280;
+            margin-bottom: 30px;
+            font-size: 16px;
+        }
+
+        .section {
+            background: #F9FAFB;
+            border-radius: 16px;
+            padding: 20px;
+            margin-bottom: 20px;
+        }
+
+        .section-title {
+            font-size: 18px;
+            font-weight: 600;
+            color: #1F2937;
+            margin-bottom: 15px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .data-info {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 12px;
+            background: white;
+            border-radius: 12px;
+            margin-bottom: 10px;
+        }
+
+        .data-label {
+            font-weight: 500;
+            color: #374151;
+        }
+
+        .data-count {
+            background: linear-gradient(135deg, #EA580C 0%, #EAB308 100%);
+            color: white;
+            padding: 4px 12px;
+            border-radius: 8px;
+            font-weight: 600;
+            font-size: 14px;
+        }
+
+        button {
+            width: 100%;
+            padding: 16px;
+            border: none;
+            border-radius: 12px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            margin-top: 10px;
+        }
+
+        .btn-clear {
+            background: linear-gradient(135deg, #DC2626 0%, #EF4444 100%);
+            color: white;
+        }
+
+        .btn-clear:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 30px rgba(220, 38, 38, 0.3);
+        }
+
+        .btn-reload {
+            background: linear-gradient(135deg, #EA580C 0%, #EAB308 100%);
+            color: white;
+        }
+
+        .btn-reload:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 30px rgba(234, 88, 12, 0.3);
+        }
+
+        .warning {
+            background: #FEF3C7;
+            border-left: 4px solid #F59E0B;
+            padding: 15px;
+            border-radius: 8px;
+            margin-top: 20px;
+            color: #92400E;
+            font-size: 14px;
+        }
+
+        .success {
+            background: #D1FAE5;
+            border-left: 4px solid #10B981;
+            padding: 15px;
+            border-radius: 8px;
+            margin-top: 20px;
+            color: #065F46;
+            font-size: 14px;
+            display: none;
+        }
+
+        .emoji {
+            font-size: 24px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🧹 Nettoyage des Données</h1>
+        <p class="subtitle">Freelance Manager - Suppression des données de test</p>
+
+        <div class="section">
+            <div class="section-title">
+                <span class="emoji">📊</span>
+                <span>Données actuelles</span>
+            </div>
+
+            <div class="data-info">
+                <span class="data-label">📝 Tâches (Todos)</span>
+                <span class="data-count" id="count-todos">0</span>
+            </div>
+
+            <div class="data-info">
+                <span class="data-label">👤 Contacts</span>
+                <span class="data-count" id="count-contacts">0</span>
+            </div>
+
+            <div class="data-info">
+                <span class="data-label">🎯 Objectifs</span>
+                <span class="data-count" id="count-goals">0</span>
+            </div>
+
+            <div class="data-info">
+                <span class="data-label">📝 Posts / Contenu</span>
+                <span class="data-count" id="count-posts">0</span>
+            </div>
+
+            <div class="data-info">
+                <span class="data-label">📈 Analytics (sera supprimé)</span>
+                <span class="data-count" id="count-analytics">0</span>
+            </div>
+        </div>
+
+        <button class="btn-clear" onclick="clearAllData()">
+            🗑️ Supprimer Toutes les Données
+        </button>
+
+        <button class="btn-reload" onclick="location.reload()">
+            🔄 Actualiser les Compteurs
+        </button>
+
+        <div class="warning">
+            ⚠️ <strong>Attention :</strong> Cette action est irréversible ! Toutes vos données seront définitivement supprimées.
+        </div>
+
+        <div class="success" id="success-message">
+            ✅ <strong>Succès :</strong> Toutes les données ont été supprimées ! Rechargez votre application.
+        </div>
+    </div>
+
+    <script>
+        // Compter les données au chargement
+        function countData() {
+            const keys = [
+                { key: 'freelance_todos', id: 'count-todos' },
+                { key: 'freelance_contacts', id: 'count-contacts' },
+                { key: 'freelance_goals', id: 'count-goals' },
+                { key: 'freelance_posts', id: 'count-posts' },
+                { key: 'freelance_analytics', id: 'count-analytics' },
+            ];
+
+            keys.forEach(({ key, id }) => {
+                const data = localStorage.getItem(key);
+                let count = 0;
+
+                if (data) {
+                    try {
+                        const parsed = JSON.parse(data);
+                        count = Array.isArray(parsed) ? parsed.length : 0;
+                    } catch (e) {
+                        count = 0;
+                    }
+                }
+
+                document.getElementById(id).textContent = count;
+            });
+        }
+
+        // Supprimer toutes les données
+        function clearAllData() {
+            const confirmed = confirm(
+                '⚠️ ATTENTION !\n\n' +
+                'Voulez-vous vraiment supprimer TOUTES les données ?\n\n' +
+                '• Tous les todos et sous-tâches\n' +
+                '• Tous les contacts\n' +
+                '• Tous les objectifs\n' +
+                '• Tous les posts\n' +
+                '• Toutes les analytics\n\n' +
+                'Cette action est IRRÉVERSIBLE !'
+            );
+
+            if (confirmed) {
+                console.log('🗑️ === SUPPRESSION DES DONNÉES ===');
+
+                const keys = [
+                    'freelance_todos',
+                    'freelance_contacts',
+                    'freelance_goals',
+                    'freelance_posts',
+                    'freelance_analytics',
+                    'freelance_platforms',
+                ];
+
+                keys.forEach(key => {
+                    const before = localStorage.getItem(key);
+                    localStorage.removeItem(key);
+                    console.log(`✅ Supprimé: ${key}`, before ? 'avait des données' : 'était vide');
+                });
+
+                console.log('✅ Toutes les données ont été supprimées !');
+
+                // Afficher le message de succès
+                document.querySelector('.warning').style.display = 'none';
+                document.getElementById('success-message').style.display = 'block';
+
+                // Actualiser les compteurs
+                setTimeout(() => {
+                    countData();
+                }, 100);
+            }
+        }
+
+        // Compter au chargement
+        countData();
+    </script>
+</body>
+</html>
