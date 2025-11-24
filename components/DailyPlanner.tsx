@@ -1,42 +1,31 @@
 'use client';
 
 import { useEffect, useState } from 'react';
-import { format, startOfDay, endOfDay, addDays, startOfWeek } from 'date-fns';
+import { format, startOfDay, endOfDay, addDays, setHours } from 'date-fns';
 import { fr } from 'date-fns/locale';
 import {
   Calendar,
   Clock,
   CheckCircle2,
   Circle,
+  ChevronLeft,
+  ChevronRight,
+  ListChecks,
+  Target,
+  FileText,
   Plus,
   Trash2,
   Edit2,
-  X,
-  Save,
-  Target,
-  FileText,
-  ListTodo,
-  ChevronLeft,
-  ChevronRight,
+  MoreVertical,
 } from 'lucide-react';
-import { Todo, Post, Goal, Priority, Platform } from '@/types';
+import { Todo, Post, Goal } from '@/types';
 import {
   getTodos,
-  addTodo,
-  updateTodo,
-  deleteTodo,
   toggleTodo,
+  toggleSubtask,
   getPosts,
-  addPost,
-  updatePost,
-  deletePost,
   getGoals,
-  addGoal,
-  updateGoal,
-  deleteGoal,
 } from '@/lib/storage';
-
-type ItemType = 'todo' | 'post' | 'goal';
 
 export default function DailyPlanner() {
   const [mounted, setMounted] = useState(false);
@@ -45,57 +34,16 @@ export default function DailyPlanner() {
   const [posts, setPosts] = useState<Post[]>([]);
   const [goals, setGoals] = useState<Goal[]>([]);
 
-  const [showForm, setShowForm] = useState(false);
-  const [formType, setFormType] = useState<ItemType>('todo');
-  const [editingId, setEditingId] = useState<string | null>(null);
-
-  // Todo form
-  const [todoForm, setTodoForm] = useState({
-    title: '',
-    description: '',
-    priority: 'MEDIUM' as Priority,
-    platform: '' as Platform | '',
-    dueDate: '',
-    dueTime: '12:00',
-  });
-
-  // Post form
-  const [postForm, setPostForm] = useState({
-    platform: 'LINKEDIN' as Platform,
-    content: '',
-    scheduledDate: '',
-    scheduledTime: '12:00',
-  });
-
-  // Goal form
-  const [goalForm, setGoalForm] = useState({
-    title: '',
-    description: '',
-    category: '',
-    currentValue: 0,
-    targetValue: 100,
-    unit: 'unités',
-    targetDate: '',
-  });
-
   useEffect(() => {
     setMounted(true);
     loadAll();
-  }, []);
+  }, [selectedDate]);
 
   const loadAll = () => {
-    console.log('📅 [PLANNER] Loading all data for DailyPlanner...');
-    const loadedTodos = getTodos();
-    const loadedPosts = getPosts();
-    const loadedGoals = getGoals();
-    console.log('📅 [PLANNER] Loaded:', {
-      todos: loadedTodos.length,
-      posts: loadedPosts.length,
-      goals: loadedGoals.length
-    });
-    setTodos(loadedTodos);
-    setPosts(loadedPosts);
-    setGoals(loadedGoals);
+    console.log('📅 [PLANNER] Loading data for:', selectedDate);
+    setTodos(getTodos());
+    setPosts(getPosts());
+    setGoals(getGoals());
   };
 
   // Filter items by selected date
@@ -125,862 +73,352 @@ export default function DailyPlanner() {
 
   const { dayTodos, dayPosts, dayGoals } = getItemsForDate(selectedDate);
 
-  // Sort items by time
-  const sortedTodos = [...dayTodos].sort((a, b) => {
-    if (!a.dueDate || !b.dueDate) return 0;
-    return new Date(a.dueDate).getTime() - new Date(b.dueDate).getTime();
-  });
+  // Group items by hour
+  const getItemsByHour = () => {
+    const hourMap: Record<number, { todos: Todo[]; posts: Post[]; goals: Goal[] }> = {};
 
-  const sortedPosts = [...dayPosts].sort((a, b) => {
-    if (!a.scheduledFor || !b.scheduledFor) return 0;
-    return new Date(a.scheduledFor).getTime() - new Date(b.scheduledFor).getTime();
-  });
-
-  // Todo CRUD
-  const handleAddTodo = (e: React.FormEvent) => {
-    e.preventDefault();
-    console.log('📅 [PLANNER] handleAddTodo called - editingId:', editingId);
-
-    const todoData = {
-      title: todoForm.title,
-      description: todoForm.description || undefined,
-      priority: todoForm.priority,
-      platform: todoForm.platform || undefined,
-      dueDate: new Date(`${todoForm.dueDate}T${todoForm.dueTime}`),
-      completed: false,
-    };
-
-    console.log('📅 [PLANNER] Todo data:', todoData);
-
-    if (editingId && formType === 'todo') {
-      console.log('📅 [PLANNER] Updating existing todo');
-      updateTodo(editingId, todoData);
-    } else {
-      console.log('📅 [PLANNER] Creating new todo');
-      addTodo(todoData);
+    // Initialize all hours
+    for (let i = 0; i < 24; i++) {
+      hourMap[i] = { todos: [], posts: [], goals: [] };
     }
 
-    resetForms();
-    loadAll();
+    // Group todos by hour
+    dayTodos.forEach((todo) => {
+      if (todo.dueDate) {
+        const hour = new Date(todo.dueDate).getHours();
+        hourMap[hour].todos.push(todo);
+      }
+    });
+
+    // Group posts by hour
+    dayPosts.forEach((post) => {
+      if (post.scheduledFor) {
+        const hour = new Date(post.scheduledFor).getHours();
+        hourMap[hour].posts.push(post);
+      }
+    });
+
+    // Group goals by hour (default to 9:00 if no time)
+    dayGoals.forEach((goal) => {
+      const hour = 9; // Default hour for goals
+      hourMap[hour].goals.push(goal);
+    });
+
+    return hourMap;
   };
 
-  const handleDeleteTodo = (id: string) => {
-    if (confirm('Supprimer cette tâche?')) {
-      deleteTodo(id);
-      loadAll();
-    }
-  };
+  const hourMap = getItemsByHour();
 
   const handleToggleTodo = (id: string) => {
     toggleTodo(id);
     loadAll();
   };
 
-  const handleEditTodo = (todo: Todo) => {
-    setFormType('todo');
-    setEditingId(todo.id);
-    setTodoForm({
-      title: todo.title,
-      description: todo.description || '',
-      priority: todo.priority,
-      platform: todo.platform || '',
-      dueDate: todo.dueDate ? format(new Date(todo.dueDate), 'yyyy-MM-dd') : '',
-      dueTime: todo.dueDate ? format(new Date(todo.dueDate), 'HH:mm') : '12:00',
-    });
-    setShowForm(true);
-  };
-
-  // Post CRUD
-  const handleAddPost = (e: React.FormEvent) => {
-    e.preventDefault();
-    console.log('📅 [PLANNER] handleAddPost called - editingId:', editingId);
-
-    const postData = {
-      platform: postForm.platform,
-      content: postForm.content,
-      scheduledFor: new Date(`${postForm.scheduledDate}T${postForm.scheduledTime}`),
-      published: false,
-    };
-
-    console.log('📅 [PLANNER] Post data:', postData);
-
-    if (editingId && formType === 'post') {
-      console.log('📅 [PLANNER] Updating existing post');
-      updatePost(editingId, postData);
-    } else {
-      console.log('📅 [PLANNER] Creating new post');
-      addPost(postData);
-    }
-
-    resetForms();
+  const handleToggleSubtask = (todoId: string, subtaskId: string) => {
+    toggleSubtask(todoId, subtaskId);
     loadAll();
-  };
-
-  const handleDeletePost = (id: string) => {
-    if (confirm('Supprimer ce post?')) {
-      deletePost(id);
-      loadAll();
-    }
-  };
-
-  const handleEditPost = (post: Post) => {
-    setFormType('post');
-    setEditingId(post.id);
-    setPostForm({
-      platform: post.platform,
-      content: post.content,
-      scheduledDate: post.scheduledFor
-        ? format(new Date(post.scheduledFor), 'yyyy-MM-dd')
-        : '',
-      scheduledTime: post.scheduledFor
-        ? format(new Date(post.scheduledFor), 'HH:mm')
-        : '12:00',
-    });
-    setShowForm(true);
-  };
-
-  // Goal CRUD
-  const handleAddGoal = (e: React.FormEvent) => {
-    e.preventDefault();
-    console.log('📅 [PLANNER] handleAddGoal called - editingId:', editingId);
-
-    const goalData = {
-      title: goalForm.title,
-      description: goalForm.description || undefined,
-      category: goalForm.category || undefined,
-      currentValue: goalForm.currentValue,
-      targetValue: goalForm.targetValue,
-      unit: goalForm.unit,
-      targetDate: new Date(goalForm.targetDate),
-      completed: false,
-    };
-
-    console.log('📅 [PLANNER] Goal data:', goalData);
-
-    if (editingId && formType === 'goal') {
-      console.log('📅 [PLANNER] Updating existing goal');
-      updateGoal(editingId, goalData);
-    } else {
-      console.log('📅 [PLANNER] Creating new goal');
-      addGoal(goalData);
-    }
-
-    resetForms();
-    loadAll();
-  };
-
-  const handleDeleteGoal = (id: string) => {
-    if (confirm('Supprimer cet objectif?')) {
-      deleteGoal(id);
-      loadAll();
-    }
-  };
-
-  const handleEditGoal = (goal: Goal) => {
-    setFormType('goal');
-    setEditingId(goal.id);
-    setGoalForm({
-      title: goal.title,
-      description: goal.description || '',
-      category: goal.category || '',
-      currentValue: goal.currentValue,
-      targetValue: goal.targetValue,
-      unit: goal.unit,
-      targetDate: format(new Date(goal.targetDate), 'yyyy-MM-dd'),
-    });
-    setShowForm(true);
-  };
-
-  const resetForms = () => {
-    setTodoForm({
-      title: '',
-      description: '',
-      priority: 'MEDIUM',
-      platform: '',
-      dueDate: format(selectedDate, 'yyyy-MM-dd'),
-      dueTime: '12:00',
-    });
-    setPostForm({
-      platform: 'LINKEDIN',
-      content: '',
-      scheduledDate: format(selectedDate, 'yyyy-MM-dd'),
-      scheduledTime: '12:00',
-    });
-    setGoalForm({
-      title: '',
-      description: '',
-      category: '',
-      currentValue: 0,
-      targetValue: 100,
-      unit: 'unités',
-      targetDate: format(selectedDate, 'yyyy-MM-dd'),
-    });
-    setShowForm(false);
-    setEditingId(null);
-  };
-
-  const openNewForm = (type: ItemType) => {
-    setFormType(type);
-    setEditingId(null);
-    // Pre-fill dates with selected date
-    setTodoForm({ ...todoForm, dueDate: format(selectedDate, 'yyyy-MM-dd') });
-    setPostForm({ ...postForm, scheduledDate: format(selectedDate, 'yyyy-MM-dd') });
-    setGoalForm({ ...goalForm, targetDate: format(selectedDate, 'yyyy-MM-dd') });
-    setShowForm(true);
   };
 
   if (!mounted) return null;
 
-  const completedTodos = sortedTodos.filter((t) => t.completed).length;
-  const totalTodos = sortedTodos.length;
+  const completedTodos = dayTodos.filter((t) => t.completed).length;
+  const totalTodos = dayTodos.length;
   const progressPercent = totalTodos > 0 ? (completedTodos / totalTodos) * 100 : 0;
 
+  const isToday = format(selectedDate, 'yyyy-MM-dd') === format(new Date(), 'yyyy-MM-dd');
+
   return (
-    <div className="space-y-6">
-      {/* Date Navigation Header */}
-      <div className="bg-white dark:bg-gray-800 rounded-2xl shadow-lg p-6">
-        <div className="flex items-center justify-between mb-4">
-          <div className="flex items-center gap-3">
-            <Calendar className="w-8 h-8 text-orange-500" />
+    <div className="min-h-screen bg-gradient-to-br from-gray-50 via-orange-50 to-yellow-50 dark:from-gray-900 dark:via-orange-900/20 dark:to-yellow-900/20 p-4 md:p-6 lg:p-8">
+      <div className="max-w-7xl mx-auto space-y-6">
+        {/* Header avec navigation */}
+        <div className="bg-white/80 dark:bg-gray-800/80 backdrop-blur-lg rounded-3xl shadow-xl border border-gray-200 dark:border-gray-700 p-6 md:p-8">
+          <div className="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-6">
             <div>
-              <h2 className="text-2xl font-bold text-gray-800 dark:text-white">
+              <h1 className="text-3xl md:text-4xl font-bold bg-gradient-to-r from-orange-600 to-yellow-600 dark:from-orange-400 dark:to-yellow-400 bg-clip-text text-transparent mb-2 flex items-center gap-3">
+                <Calendar className="w-8 h-8 md:w-10 md:h-10 text-orange-600 dark:text-orange-400" />
                 Planning Quotidien
-              </h2>
-              <p className="text-gray-600 dark:text-gray-400">
+              </h1>
+              <p className="text-lg text-gray-600 dark:text-gray-400">
                 {format(selectedDate, 'EEEE d MMMM yyyy', { locale: fr })}
               </p>
             </div>
-          </div>
 
-          {/* Date Navigation */}
-          <div className="flex items-center gap-2">
-            <button
-              onClick={() => setSelectedDate(addDays(selectedDate, -1))}
-              className="p-2 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors"
-            >
-              <ChevronLeft className="w-5 h-5 text-gray-600 dark:text-gray-400" />
-            </button>
-            <button
-              onClick={() => setSelectedDate(new Date())}
-              className="px-4 py-2 text-sm font-medium text-orange-600 dark:text-orange-400 hover:bg-orange-50 dark:hover:bg-orange-900/30 rounded-lg transition-colors"
-            >
-              Aujourd'hui
-            </button>
-            <button
-              onClick={() => setSelectedDate(addDays(selectedDate, 1))}
-              className="p-2 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors"
-            >
-              <ChevronRight className="w-5 h-5 text-gray-600 dark:text-gray-400" />
-            </button>
-          </div>
-        </div>
+            {/* Navigation de date */}
+            <div className="flex items-center gap-3">
+              <button
+                onClick={() => setSelectedDate(addDays(selectedDate, -1))}
+                className="p-3 rounded-2xl hover:bg-orange-50 dark:hover:bg-orange-900/30 transition-all hover:scale-110"
+              >
+                <ChevronLeft className="w-6 h-6 text-gray-600 dark:text-gray-400" />
+              </button>
 
-        {/* Progress Bar */}
-        {totalTodos > 0 && (
-          <div className="mb-4">
-            <div className="flex items-center justify-between mb-2">
-              <span className="text-sm text-gray-600 dark:text-gray-400">
-                {completedTodos} / {totalTodos} tâches complétées
-              </span>
-              <span className="text-sm font-medium text-orange-600 dark:text-orange-400">
-                {Math.round(progressPercent)}%
-              </span>
-            </div>
-            <div className="relative h-3 bg-gray-200 dark:bg-gray-700 rounded-full overflow-hidden">
-              <div
-                className="absolute inset-y-0 left-0 bg-gradient-to-r from-orange-500 to-yellow-500 rounded-full transition-all duration-500"
-                style={{ width: `${progressPercent}%` }}
-              />
+              <button
+                onClick={() => setSelectedDate(new Date())}
+                className={`px-6 py-3 rounded-2xl font-semibold transition-all ${
+                  isToday
+                    ? 'bg-gradient-to-r from-orange-500 to-yellow-500 text-white shadow-lg'
+                    : 'bg-white dark:bg-gray-700 text-gray-700 dark:text-gray-300 hover:bg-orange-50 dark:hover:bg-orange-900/30'
+                }`}
+              >
+                Aujourd'hui
+              </button>
+
+              <button
+                onClick={() => setSelectedDate(addDays(selectedDate, 1))}
+                className="p-3 rounded-2xl hover:bg-orange-50 dark:hover:bg-orange-900/30 transition-all hover:scale-110"
+              >
+                <ChevronRight className="w-6 h-6 text-gray-600 dark:text-gray-400" />
+              </button>
             </div>
           </div>
-        )}
 
-        {/* Quick Add Buttons */}
-        <div className="flex gap-2">
-          <button
-            onClick={() => openNewForm('todo')}
-            className="flex items-center gap-2 px-4 py-2 bg-orange-500 text-white rounded-lg hover:bg-blue-600 transition-colors text-sm"
-          >
-            <Plus className="w-4 h-4" />
-            Tâche
-          </button>
-          <button
-            onClick={() => openNewForm('post')}
-            className="flex items-center gap-2 px-4 py-2 bg-orange-500 text-white rounded-lg hover:bg-orange-600 transition-colors text-sm"
-          >
-            <Plus className="w-4 h-4" />
-            Post
-          </button>
-          <button
-            onClick={() => openNewForm('goal')}
-            className="flex items-center gap-2 px-4 py-2 bg-green-500 text-white rounded-lg hover:bg-green-600 transition-colors text-sm"
-          >
-            <Plus className="w-4 h-4" />
-            Objectif
-          </button>
-        </div>
-      </div>
-
-      {/* Form */}
-      {showForm && (
-        <div className="bg-white dark:bg-gray-800 rounded-2xl shadow-lg p-6 animate-slide-up">
-          <div className="flex items-center justify-between mb-4">
-            <h3 className="text-xl font-bold text-gray-800 dark:text-white">
-              {editingId ? 'Modifier' : 'Nouveau'}{' '}
-              {formType === 'todo' ? 'Tâche' : formType === 'post' ? 'Post' : 'Objectif'}
-            </h3>
-            <button
-              onClick={resetForms}
-              className="p-2 hover:bg-gray-100 dark:hover:bg-gray-700 rounded-lg transition-colors"
-            >
-              <X className="w-5 h-5 text-gray-600 dark:text-gray-400" />
-            </button>
-          </div>
-
-          {/* Todo Form */}
-          {formType === 'todo' && (
-            <form onSubmit={handleAddTodo} className="space-y-4">
-              <div>
-                <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
-                  Titre *
-                </label>
-                <input
-                  type="text"
-                  required
-                  value={todoForm.title}
-                  onChange={(e) => setTodoForm({ ...todoForm, title: e.target.value })}
-                  className="w-full px-4 py-3 rounded-xl border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 text-gray-900 dark:text-white focus:ring-2 focus:ring-blue-500 outline-none"
-                  placeholder="Ex: Publier sur LinkedIn"
-                />
+          {/* Progress bar */}
+          {totalTodos > 0 && (
+            <div className="mt-6 pt-6 border-t border-gray-200 dark:border-gray-700">
+              <div className="flex items-center justify-between mb-3">
+                <span className="text-sm font-semibold text-gray-700 dark:text-gray-300 flex items-center gap-2">
+                  <ListChecks className="w-4 h-4" />
+                  Progression du jour
+                </span>
+                <span className="text-sm font-bold text-orange-600 dark:text-orange-400">
+                  {completedTodos} / {totalTodos} complétées ({Math.round(progressPercent)}%)
+                </span>
               </div>
-
-              <div>
-                <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
-                  Description
-                </label>
-                <textarea
-                  value={todoForm.description}
-                  onChange={(e) => setTodoForm({ ...todoForm, description: e.target.value })}
-                  rows={3}
-                  className="w-full px-4 py-3 rounded-xl border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 text-gray-900 dark:text-white focus:ring-2 focus:ring-blue-500 outline-none"
-                  placeholder="Détails..."
-                />
-              </div>
-
-              <div className="grid grid-cols-2 gap-4">
-                <div>
-                  <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
-                    Priorité
-                  </label>
-                  <select
-                    value={todoForm.priority}
-                    onChange={(e) =>
-                      setTodoForm({ ...todoForm, priority: e.target.value as Priority })
-                    }
-                    className="w-full px-4 py-3 rounded-xl border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 text-gray-900 dark:text-white focus:ring-2 focus:ring-blue-500 outline-none"
-                  >
-                    <option value="LOW">Basse</option>
-                    <option value="MEDIUM">Moyenne</option>
-                    <option value="HIGH">Haute</option>
-                  </select>
-                </div>
-
-                <div>
-                  <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
-                    Plateforme
-                  </label>
-                  <select
-                    value={todoForm.platform}
-                    onChange={(e) =>
-                      setTodoForm({ ...todoForm, platform: e.target.value as Platform | '' })
-                    }
-                    className="w-full px-4 py-3 rounded-xl border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 text-gray-900 dark:text-white focus:ring-2 focus:ring-blue-500 outline-none"
-                  >
-                    <option value="">Aucune</option>
-                    <option value="LINKEDIN">LinkedIn</option>
-                    <option value="TWITTER">Twitter</option>
-                    <option value="INSTAGRAM">Instagram</option>
-                    <option value="FACEBOOK">Facebook</option>
-                    <option value="TIKTOK">TikTok</option>
-                    <option value="YOUTUBE">YouTube</option>
-                  </select>
-                </div>
-              </div>
-
-              <div className="grid grid-cols-2 gap-4">
-                <div>
-                  <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
-                    Date *
-                  </label>
-                  <input
-                    type="date"
-                    required
-                    value={todoForm.dueDate}
-                    onChange={(e) => setTodoForm({ ...todoForm, dueDate: e.target.value })}
-                    className="w-full px-4 py-3 rounded-xl border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 text-gray-900 dark:text-white focus:ring-2 focus:ring-blue-500 outline-none"
-                  />
-                </div>
-
-                <div>
-                  <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
-                    Heure *
-                  </label>
-                  <input
-                    type="time"
-                    required
-                    value={todoForm.dueTime}
-                    onChange={(e) => setTodoForm({ ...todoForm, dueTime: e.target.value })}
-                    className="w-full px-4 py-3 rounded-xl border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 text-gray-900 dark:text-white focus:ring-2 focus:ring-blue-500 outline-none"
-                  />
-                </div>
-              </div>
-
-              <button
-                type="submit"
-                className="w-full flex items-center justify-center gap-2 px-6 py-3 bg-gradient-to-r from-orange-500 to-yellow-500 text-white rounded-xl hover:shadow-lg transition-all duration-300 hover:scale-105"
-              >
-                <Save className="w-5 h-5" />
-                {editingId ? 'Mettre à jour' : 'Ajouter'}
-              </button>
-            </form>
-          )}
-
-          {/* Post Form */}
-          {formType === 'post' && (
-            <form onSubmit={handleAddPost} className="space-y-4">
-              <div>
-                <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
-                  Plateforme *
-                </label>
-                <select
-                  value={postForm.platform}
-                  onChange={(e) =>
-                    setPostForm({ ...postForm, platform: e.target.value as Platform })
-                  }
-                  className="w-full px-4 py-3 rounded-xl border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 text-gray-900 dark:text-white focus:ring-2 focus:ring-blue-500 outline-none"
-                >
-                  <option value="LINKEDIN">LinkedIn</option>
-                  <option value="TWITTER">Twitter</option>
-                  <option value="INSTAGRAM">Instagram</option>
-                  <option value="FACEBOOK">Facebook</option>
-                  <option value="TIKTOK">TikTok</option>
-                  <option value="YOUTUBE">YouTube</option>
-                </select>
-              </div>
-
-              <div>
-                <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
-                  Contenu *
-                </label>
-                <textarea
-                  required
-                  value={postForm.content}
-                  onChange={(e) => setPostForm({ ...postForm, content: e.target.value })}
-                  rows={6}
-                  className="w-full px-4 py-3 rounded-xl border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 text-gray-900 dark:text-white focus:ring-2 focus:ring-blue-500 outline-none font-mono text-sm"
-                  placeholder="Contenu du post..."
-                />
-                <p className="text-sm text-gray-500 dark:text-gray-400 mt-1">
-                  {postForm.content.length} caractères
-                </p>
-              </div>
-
-              <div className="grid grid-cols-2 gap-4">
-                <div>
-                  <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
-                    Date *
-                  </label>
-                  <input
-                    type="date"
-                    required
-                    value={postForm.scheduledDate}
-                    onChange={(e) => setPostForm({ ...postForm, scheduledDate: e.target.value })}
-                    className="w-full px-4 py-3 rounded-xl border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 text-gray-900 dark:text-white focus:ring-2 focus:ring-blue-500 outline-none"
-                  />
-                </div>
-
-                <div>
-                  <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
-                    Heure *
-                  </label>
-                  <input
-                    type="time"
-                    required
-                    value={postForm.scheduledTime}
-                    onChange={(e) => setPostForm({ ...postForm, scheduledTime: e.target.value })}
-                    className="w-full px-4 py-3 rounded-xl border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 text-gray-900 dark:text-white focus:ring-2 focus:ring-blue-500 outline-none"
-                  />
-                </div>
-              </div>
-
-              <button
-                type="submit"
-                className="w-full flex items-center justify-center gap-2 px-6 py-3 bg-gradient-to-r from-orange-500 to-yellow-500 text-white rounded-xl hover:shadow-lg transition-all duration-300 hover:scale-105"
-              >
-                <Save className="w-5 h-5" />
-                {editingId ? 'Mettre à jour' : 'Ajouter'}
-              </button>
-            </form>
-          )}
-
-          {/* Goal Form */}
-          {formType === 'goal' && (
-            <form onSubmit={handleAddGoal} className="space-y-4">
-              <div>
-                <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
-                  Titre *
-                </label>
-                <input
-                  type="text"
-                  required
-                  value={goalForm.title}
-                  onChange={(e) => setGoalForm({ ...goalForm, title: e.target.value })}
-                  className="w-full px-4 py-3 rounded-xl border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 text-gray-900 dark:text-white focus:ring-2 focus:ring-blue-500 outline-none"
-                  placeholder="Ex: Atteindre 1000 followers"
-                />
-              </div>
-
-              <div>
-                <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
-                  Description
-                </label>
-                <textarea
-                  value={goalForm.description}
-                  onChange={(e) => setGoalForm({ ...goalForm, description: e.target.value })}
-                  rows={2}
-                  className="w-full px-4 py-3 rounded-xl border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 text-gray-900 dark:text-white focus:ring-2 focus:ring-blue-500 outline-none"
-                  placeholder="Détails..."
-                />
-              </div>
-
-              <div className="grid grid-cols-2 gap-4">
-                <div>
-                  <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
-                    Catégorie
-                  </label>
-                  <input
-                    type="text"
-                    value={goalForm.category}
-                    onChange={(e) => setGoalForm({ ...goalForm, category: e.target.value })}
-                    className="w-full px-4 py-3 rounded-xl border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 text-gray-900 dark:text-white focus:ring-2 focus:ring-blue-500 outline-none"
-                    placeholder="Ex: LINKEDIN"
-                  />
-                </div>
-
-                <div>
-                  <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
-                    Unité *
-                  </label>
-                  <input
-                    type="text"
-                    required
-                    value={goalForm.unit}
-                    onChange={(e) => setGoalForm({ ...goalForm, unit: e.target.value })}
-                    className="w-full px-4 py-3 rounded-xl border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 text-gray-900 dark:text-white focus:ring-2 focus:ring-blue-500 outline-none"
-                    placeholder="Ex: followers"
-                  />
-                </div>
-              </div>
-
-              <div className="grid grid-cols-2 gap-4">
-                <div>
-                  <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
-                    Valeur actuelle
-                  </label>
-                  <input
-                    type="number"
-                    value={goalForm.currentValue}
-                    onChange={(e) =>
-                      setGoalForm({ ...goalForm, currentValue: parseInt(e.target.value) || 0 })
-                    }
-                    className="w-full px-4 py-3 rounded-xl border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 text-gray-900 dark:text-white focus:ring-2 focus:ring-blue-500 outline-none"
-                  />
-                </div>
-
-                <div>
-                  <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
-                    Valeur cible *
-                  </label>
-                  <input
-                    type="number"
-                    required
-                    value={goalForm.targetValue}
-                    onChange={(e) =>
-                      setGoalForm({ ...goalForm, targetValue: parseInt(e.target.value) || 100 })
-                    }
-                    className="w-full px-4 py-3 rounded-xl border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 text-gray-900 dark:text-white focus:ring-2 focus:ring-blue-500 outline-none"
-                  />
-                </div>
-              </div>
-
-              <div>
-                <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
-                  Date cible *
-                </label>
-                <input
-                  type="date"
-                  required
-                  value={goalForm.targetDate}
-                  onChange={(e) => setGoalForm({ ...goalForm, targetDate: e.target.value })}
-                  className="w-full px-4 py-3 rounded-xl border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 text-gray-900 dark:text-white focus:ring-2 focus:ring-blue-500 outline-none"
-                />
-              </div>
-
-              <button
-                type="submit"
-                className="w-full flex items-center justify-center gap-2 px-6 py-3 bg-gradient-to-r from-orange-500 to-yellow-500 text-white rounded-xl hover:shadow-lg transition-all duration-300 hover:scale-105"
-              >
-                <Save className="w-5 h-5" />
-                {editingId ? 'Mettre à jour' : 'Ajouter'}
-              </button>
-            </form>
-          )}
-        </div>
-      )}
-
-      {/* Timeline View */}
-      <div className="space-y-4">
-        {/* Todos Section */}
-        {sortedTodos.length > 0 && (
-          <div className="bg-white dark:bg-gray-800 rounded-2xl shadow-lg p-6">
-            <h3 className="text-lg font-bold text-gray-800 dark:text-white mb-4 flex items-center gap-2">
-              <ListTodo className="w-5 h-5 text-orange-500" />
-              Tâches ({sortedTodos.length})
-            </h3>
-
-            <div className="space-y-3">
-              {sortedTodos.map((todo) => (
+              <div className="relative h-3 bg-gray-200 dark:bg-gray-700 rounded-full overflow-hidden">
                 <div
-                  key={todo.id}
-                  className="bg-gray-50 dark:bg-gray-700/50 rounded-xl p-4 hover:shadow-md transition-all"
+                  className="absolute inset-y-0 left-0 bg-gradient-to-r from-orange-500 to-yellow-500 rounded-full transition-all duration-500"
+                  style={{ width: `${progressPercent}%` }}
+                />
+              </div>
+            </div>
+          )}
+        </div>
+
+        {/* Timeline par heure */}
+        <div className="space-y-4">
+          {Object.entries(hourMap)
+            .filter(([_, items]) => items.todos.length > 0 || items.posts.length > 0 || items.goals.length > 0)
+            .map(([hourStr, items]) => {
+              const hour = parseInt(hourStr);
+              const hasItems = items.todos.length > 0 || items.posts.length > 0 || items.goals.length > 0;
+
+              if (!hasItems) return null;
+
+              return (
+                <div
+                  key={hour}
+                  className="bg-white/80 dark:bg-gray-800/80 backdrop-blur-lg rounded-3xl shadow-lg border border-gray-200 dark:border-gray-700 p-6 hover:shadow-xl transition-all"
                 >
-                  <div className="flex items-start gap-3">
-                    <button
-                      onClick={() => handleToggleTodo(todo.id)}
-                      className="mt-1 flex-shrink-0"
-                    >
-                      {todo.completed ? (
-                        <CheckCircle2 className="w-5 h-5 text-green-500" />
-                      ) : (
-                        <Circle className="w-5 h-5 text-gray-400 hover:text-orange-500 transition-colors" />
-                      )}
-                    </button>
-
-                    <div className="flex-1">
-                      <div className="flex items-start justify-between">
-                        <div className="flex-1">
-                          <h4
-                            className={`font-medium ${
-                              todo.completed
-                                ? 'line-through text-gray-400'
-                                : 'text-gray-800 dark:text-white'
-                            }`}
-                          >
-                            {todo.title}
-                          </h4>
-                          {todo.description && (
-                            <p className="text-sm text-gray-600 dark:text-gray-400 mt-1">
-                              {todo.description}
-                            </p>
-                          )}
+                  {/* Header de l'heure */}
+                  <div className="flex items-center gap-4 mb-6 pb-4 border-b border-gray-200 dark:border-gray-700">
+                    <div className="flex items-center justify-center w-20 h-20 rounded-2xl bg-gradient-to-br from-orange-100 to-yellow-100 dark:from-orange-900/30 dark:to-yellow-900/30">
+                      <div className="text-center">
+                        <div className="text-2xl font-bold text-orange-600 dark:text-orange-400">
+                          {hour.toString().padStart(2, '0')}
                         </div>
-
-                        <div className="flex gap-2 ml-4">
-                          <button
-                            onClick={() => handleEditTodo(todo)}
-                            className="p-1.5 text-orange-500 hover:bg-orange-50 dark:hover:bg-orange-900/30 rounded-lg transition-all"
-                          >
-                            <Edit2 className="w-4 h-4" />
-                          </button>
-                          <button
-                            onClick={() => handleDeleteTodo(todo.id)}
-                            className="p-1.5 text-red-500 hover:bg-red-50 dark:hover:bg-red-900/30 rounded-lg transition-all"
-                          >
-                            <Trash2 className="w-4 h-4" />
-                          </button>
-                        </div>
+                        <div className="text-xs text-gray-600 dark:text-gray-400">h00</div>
                       </div>
+                    </div>
 
-                      <div className="flex items-center gap-2 mt-2">
-                        {todo.dueDate && (
-                          <span className="flex items-center gap-1 text-xs text-gray-600 dark:text-gray-400">
-                            <Clock className="w-3 h-3" />
-                            {format(new Date(todo.dueDate), 'HH:mm')}
-                          </span>
-                        )}
-                        <span
-                          className={`text-xs px-2 py-1 rounded-full font-medium ${
-                            todo.priority === 'HIGH'
-                              ? 'bg-red-100 text-red-700 dark:bg-red-900/30 dark:text-red-400'
-                              : todo.priority === 'MEDIUM'
-                              ? 'bg-yellow-100 text-yellow-700 dark:bg-yellow-900/30 dark:text-yellow-400'
-                              : 'bg-green-100 text-green-700 dark:bg-green-900/30 dark:text-green-400'
+                    <div>
+                      <h3 className="text-lg font-bold text-gray-800 dark:text-white">
+                        {hour < 12 ? 'Matin' : hour < 18 ? 'Après-midi' : 'Soirée'}
+                      </h3>
+                      <p className="text-sm text-gray-600 dark:text-gray-400">
+                        {items.todos.length} tâche{items.todos.length > 1 ? 's' : ''} • {items.posts.length} post{items.posts.length > 1 ? 's' : ''} • {items.goals.length} objectif{items.goals.length > 1 ? 's' : ''}
+                      </p>
+                    </div>
+                  </div>
+
+                  {/* Todos */}
+                  {items.todos.length > 0 && (
+                    <div className="space-y-3 mb-4">
+                      {items.todos.map((todo) => (
+                        <div
+                          key={todo.id}
+                          className={`group p-4 rounded-2xl border-2 transition-all hover:shadow-md ${
+                            todo.completed
+                              ? 'bg-green-50 dark:bg-green-900/20 border-green-200 dark:border-green-800'
+                              : 'bg-white dark:bg-gray-700/50 border-gray-200 dark:border-gray-600 hover:border-orange-300 dark:hover:border-orange-700'
                           }`}
                         >
-                          {todo.priority}
-                        </span>
-                        {todo.platform && (
-                          <span className="text-xs px-2 py-1 rounded-full bg-blue-100 text-blue-700 dark:bg-orange-900/30 dark:text-orange-400 font-medium">
-                            {todo.platform}
-                          </span>
-                        )}
-                      </div>
-                    </div>
-                  </div>
-                </div>
-              ))}
-            </div>
-          </div>
-        )}
+                          <div className="flex items-start gap-3">
+                            <button
+                              onClick={() => handleToggleTodo(todo.id)}
+                              className="mt-1 flex-shrink-0"
+                            >
+                              {todo.completed ? (
+                                <CheckCircle2 className="w-6 h-6 text-green-500" />
+                              ) : (
+                                <Circle className="w-6 h-6 text-gray-400 hover:text-orange-500 transition-colors" />
+                              )}
+                            </button>
 
-        {/* Posts Section */}
-        {sortedPosts.length > 0 && (
-          <div className="bg-white dark:bg-gray-800 rounded-2xl shadow-lg p-6">
-            <h3 className="text-lg font-bold text-gray-800 dark:text-white mb-4 flex items-center gap-2">
-              <FileText className="w-5 h-5 text-orange-500" />
-              Posts planifiés ({sortedPosts.length})
+                            <div className="flex-1 min-w-0">
+                              <div className="flex items-start justify-between gap-2">
+                                <h4
+                                  className={`font-semibold text-gray-800 dark:text-white ${
+                                    todo.completed ? 'line-through text-gray-500' : ''
+                                  }`}
+                                >
+                                  {todo.title}
+                                </h4>
+
+                                <div className="flex items-center gap-2">
+                                  <span
+                                    className={`px-3 py-1 rounded-full text-xs font-semibold ${
+                                      todo.priority === 'HIGH'
+                                        ? 'bg-red-100 text-red-700 dark:bg-red-900/30 dark:text-red-300'
+                                        : todo.priority === 'MEDIUM'
+                                        ? 'bg-orange-100 text-orange-700 dark:bg-orange-900/30 dark:text-orange-300'
+                                        : 'bg-blue-100 text-blue-700 dark:bg-blue-900/30 dark:text-blue-300'
+                                    }`}
+                                  >
+                                    {todo.priority}
+                                  </span>
+
+                                  <Clock className="w-4 h-4 text-gray-400" />
+                                  <span className="text-sm text-gray-600 dark:text-gray-400">
+                                    {format(new Date(todo.dueDate!), 'HH:mm')}
+                                  </span>
+                                </div>
+                              </div>
+
+                              {todo.description && (
+                                <p className="text-sm text-gray-600 dark:text-gray-400 mt-2">
+                                  {todo.description}
+                                </p>
+                              )}
+
+                              {/* Sous-tâches */}
+                              {todo.subtasks && todo.subtasks.length > 0 && (
+                                <div className="mt-3 space-y-2 pl-4 border-l-2 border-orange-200 dark:border-orange-800">
+                                  {todo.subtasks.map((subtask) => (
+                                    <div
+                                      key={subtask.id}
+                                      className="flex items-center gap-2 group/subtask"
+                                    >
+                                      <button
+                                        onClick={() => handleToggleSubtask(todo.id, subtask.id)}
+                                        className="flex-shrink-0"
+                                      >
+                                        {subtask.completed ? (
+                                          <CheckCircle2 className="w-4 h-4 text-green-500" />
+                                        ) : (
+                                          <Circle className="w-4 h-4 text-gray-400 hover:text-orange-500 transition-colors" />
+                                        )}
+                                      </button>
+                                      <span
+                                        className={`text-sm ${
+                                          subtask.completed
+                                            ? 'line-through text-gray-400'
+                                            : 'text-gray-700 dark:text-gray-300'
+                                        }`}
+                                      >
+                                        {subtask.title}
+                                      </span>
+                                    </div>
+                                  ))}
+                                </div>
+                              )}
+
+                              {todo.platform && (
+                                <div className="mt-2">
+                                  <span className="inline-flex items-center gap-1 px-3 py-1 rounded-full bg-orange-100 dark:bg-orange-900/30 text-orange-700 dark:text-orange-300 text-xs font-medium">
+                                    {todo.platform}
+                                  </span>
+                                </div>
+                              )}
+                            </div>
+                          </div>
+                        </div>
+                      ))}
+                    </div>
+                  )}
+
+                  {/* Posts */}
+                  {items.posts.length > 0 && (
+                    <div className="space-y-3 mb-4">
+                      {items.posts.map((post) => (
+                        <div
+                          key={post.id}
+                          className="p-4 rounded-2xl bg-gradient-to-br from-blue-50 to-cyan-50 dark:from-blue-900/20 dark:to-cyan-900/20 border-2 border-blue-200 dark:border-blue-800"
+                        >
+                          <div className="flex items-start gap-3">
+                            <FileText className="w-5 h-5 text-blue-500 mt-1" />
+                            <div className="flex-1">
+                              <div className="flex items-center justify-between mb-2">
+                                <span className="px-3 py-1 rounded-full bg-blue-500 text-white text-xs font-semibold">
+                                  {post.platform}
+                                </span>
+                                <span className="text-sm text-gray-600 dark:text-gray-400 flex items-center gap-1">
+                                  <Clock className="w-4 h-4" />
+                                  {format(new Date(post.scheduledFor!), 'HH:mm')}
+                                </span>
+                              </div>
+                              <p className="text-sm text-gray-700 dark:text-gray-300 line-clamp-2">
+                                {post.content}
+                              </p>
+                            </div>
+                          </div>
+                        </div>
+                      ))}
+                    </div>
+                  )}
+
+                  {/* Goals */}
+                  {items.goals.length > 0 && (
+                    <div className="space-y-3">
+                      {items.goals.map((goal) => (
+                        <div
+                          key={goal.id}
+                          className="p-4 rounded-2xl bg-gradient-to-br from-green-50 to-emerald-50 dark:from-green-900/20 dark:to-emerald-900/20 border-2 border-green-200 dark:border-green-800"
+                        >
+                          <div className="flex items-start gap-3">
+                            <Target className="w-5 h-5 text-green-500 mt-1" />
+                            <div className="flex-1">
+                              <h4 className="font-semibold text-gray-800 dark:text-white mb-2">
+                                {goal.title}
+                              </h4>
+                              <div className="flex items-center gap-2">
+                                <div className="flex-1 h-2 bg-gray-200 dark:bg-gray-700 rounded-full overflow-hidden">
+                                  <div
+                                    className="h-full bg-gradient-to-r from-green-500 to-emerald-500 rounded-full transition-all"
+                                    style={{
+                                      width: `${Math.min(100, (goal.currentValue / goal.targetValue) * 100)}%`,
+                                    }}
+                                  />
+                                </div>
+                                <span className="text-sm font-semibold text-green-600 dark:text-green-400">
+                                  {goal.currentValue} / {goal.targetValue} {goal.unit}
+                                </span>
+                              </div>
+                            </div>
+                          </div>
+                        </div>
+                      ))}
+                    </div>
+                  )}
+                </div>
+              );
+            })}
+        </div>
+
+        {/* Empty state */}
+        {dayTodos.length === 0 && dayPosts.length === 0 && dayGoals.length === 0 && (
+          <div className="bg-white/80 dark:bg-gray-800/80 backdrop-blur-lg rounded-3xl shadow-xl border-2 border-dashed border-gray-300 dark:border-gray-600 p-12 md:p-16 text-center">
+            <div className="w-20 h-20 mx-auto mb-6 rounded-full bg-gradient-to-br from-orange-100 to-yellow-100 dark:from-orange-900/30 dark:to-yellow-900/30 flex items-center justify-center">
+              <Calendar className="w-10 h-10 text-orange-600 dark:text-orange-400" />
+            </div>
+            <h3 className="text-2xl font-bold text-gray-800 dark:text-white mb-3">
+              Aucune activité prévue
             </h3>
-
-            <div className="space-y-3">
-              {sortedPosts.map((post) => (
-                <div
-                  key={post.id}
-                  className="bg-gray-50 dark:bg-gray-700/50 rounded-xl p-4 hover:shadow-md transition-all"
-                >
-                  <div className="flex items-start justify-between mb-3">
-                    <div className="flex items-center gap-2">
-                      <span className="px-3 py-1 rounded-full bg-orange-100 text-orange-700 dark:bg-orange-900/30 dark:text-orange-400 text-sm font-medium">
-                        {post.platform}
-                      </span>
-                      {post.scheduledFor && (
-                        <span className="flex items-center gap-1 text-xs text-gray-600 dark:text-gray-400">
-                          <Clock className="w-3 h-3" />
-                          {format(new Date(post.scheduledFor), 'HH:mm')}
-                        </span>
-                      )}
-                    </div>
-
-                    <div className="flex gap-2">
-                      <button
-                        onClick={() => handleEditPost(post)}
-                        className="p-1.5 text-orange-500 hover:bg-orange-50 dark:hover:bg-orange-900/30 rounded-lg transition-all"
-                      >
-                        <Edit2 className="w-4 h-4" />
-                      </button>
-                      <button
-                        onClick={() => handleDeletePost(post.id)}
-                        className="p-1.5 text-red-500 hover:bg-red-50 dark:hover:bg-red-900/30 rounded-lg transition-all"
-                      >
-                        <Trash2 className="w-4 h-4" />
-                      </button>
-                    </div>
-                  </div>
-
-                  <p className="text-sm text-gray-700 dark:text-gray-300 whitespace-pre-wrap">
-                    {post.content.substring(0, 200)}
-                    {post.content.length > 200 ? '...' : ''}
-                  </p>
-                </div>
-              ))}
-            </div>
-          </div>
-        )}
-
-        {/* Goals Section */}
-        {dayGoals.length > 0 && (
-          <div className="bg-white dark:bg-gray-800 rounded-2xl shadow-lg p-6">
-            <h3 className="text-lg font-bold text-gray-800 dark:text-white mb-4 flex items-center gap-2">
-              <Target className="w-5 h-5 text-green-500" />
-              Objectifs à atteindre ({dayGoals.length})
-            </h3>
-
-            <div className="space-y-3">
-              {dayGoals.map((goal) => (
-                <div
-                  key={goal.id}
-                  className="bg-gray-50 dark:bg-gray-700/50 rounded-xl p-4 hover:shadow-md transition-all"
-                >
-                  <div className="flex items-start justify-between mb-3">
-                    <div className="flex-1">
-                      <h4 className="font-medium text-gray-800 dark:text-white mb-1">
-                        {goal.title}
-                      </h4>
-                      <div className="flex items-center gap-2">
-                        <span className="text-sm text-gray-600 dark:text-gray-400">
-                          {goal.currentValue} / {goal.targetValue} {goal.unit}
-                        </span>
-                        {goal.category && (
-                          <span className="text-xs px-2 py-1 rounded-full bg-green-100 text-green-700 dark:bg-green-900/30 dark:text-green-400 font-medium">
-                            {goal.category}
-                          </span>
-                        )}
-                      </div>
-                    </div>
-
-                    <div className="flex gap-2">
-                      <button
-                        onClick={() => handleEditGoal(goal)}
-                        className="p-1.5 text-orange-500 hover:bg-orange-50 dark:hover:bg-orange-900/30 rounded-lg transition-all"
-                      >
-                        <Edit2 className="w-4 h-4" />
-                      </button>
-                      <button
-                        onClick={() => handleDeleteGoal(goal.id)}
-                        className="p-1.5 text-red-500 hover:bg-red-50 dark:hover:bg-red-900/30 rounded-lg transition-all"
-                      >
-                        <Trash2 className="w-4 h-4" />
-                      </button>
-                    </div>
-                  </div>
-
-                  {/* Progress bar */}
-                  <div className="relative h-2 bg-gray-200 dark:bg-gray-600 rounded-full overflow-hidden">
-                    <div
-                      className="absolute inset-y-0 left-0 bg-gradient-to-r from-orange-500 to-yellow-500 rounded-full"
-                      style={{
-                        width: `${Math.min(
-                          100,
-                          (goal.currentValue / goal.targetValue) * 100
-                        )}%`,
-                      }}
-                    />
-                  </div>
-                </div>
-              ))}
-            </div>
-          </div>
-        )}
-
-        {/* Empty State */}
-        {sortedTodos.length === 0 && sortedPosts.length === 0 && dayGoals.length === 0 && (
-          <div className="bg-white dark:bg-gray-800 rounded-2xl shadow-lg p-12 text-center">
-            <Calendar className="w-16 h-16 text-gray-400 mx-auto mb-4" />
-            <p className="text-gray-500 dark:text-gray-400 text-lg mb-4">
-              Aucune activité prévue pour cette date
+            <p className="text-gray-600 dark:text-gray-400 mb-6">
+              Vous n'avez rien de planifié pour le {format(selectedDate, 'EEEE d MMMM', { locale: fr })}
             </p>
-            <p className="text-gray-400 dark:text-gray-500 text-sm mb-6">
-              Commencez à planifier votre journée en ajoutant des tâches, posts ou objectifs
+            <p className="text-sm text-gray-500 dark:text-gray-500">
+              Utilisez les sections Tâches, Contenu et Objectifs pour planifier votre journée
             </p>
-            <div className="flex justify-center gap-2">
-              <button
-                onClick={() => openNewForm('todo')}
-                className="px-4 py-2 bg-orange-500 text-white rounded-lg hover:bg-blue-600 transition-colors text-sm"
-              >
-                Ajouter une tâche
-              </button>
-              <button
-                onClick={() => openNewForm('post')}
-                className="px-4 py-2 bg-orange-500 text-white rounded-lg hover:bg-orange-600 transition-colors text-sm"
-              >
-                Planifier un post
-              </button>
-              <button
-                onClick={() => openNewForm('goal')}
-                className="px-4 py-2 bg-green-500 text-white rounded-lg hover:bg-green-600 transition-colors text-sm"
-              >
-                Définir un objectif
-              </button>
-            </div>
           </div>
         )}
       </div>
