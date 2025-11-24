@@ -52,8 +52,11 @@ export interface Goal {
   id: string;
   title: string;
   description?: string;
+  category?: string; // Ex: "LINKEDIN", "TIKTOK", "CLIENTS", etc.
+  currentValue: number; // Valeur actuelle (ex: 150 followers)
+  targetValue: number; // Valeur cible (ex: 1000 followers)
+  unit: string; // Ex: "followers", "connections", "clients", "%"
   targetDate: Date;
-  progress: number;
   completed: boolean;
   createdAt: Date;
   updatedAt: Date;

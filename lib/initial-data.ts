@@ -145,53 +145,135 @@ export const initialTodos: Omit<Todo, 'id' | 'createdAt' | 'updatedAt' | 'subtas
 ];
 
 export const initialGoals: Omit<Goal, 'id' | 'createdAt' | 'updatedAt'>[] = [
+  // LinkedIn
   {
-    title: 'Atteindre 10K followers LinkedIn',
-    description: 'Croissance organique via contenu de qualite et engagement actif',
+    title: 'LinkedIn: +500 Connexions',
+    description: 'Atteindre 500 nouvelles connexions qualifiées',
+    category: 'LINKEDIN',
+    currentValue: 0,
+    targetValue: 500,
+    unit: 'connexions',
+    targetDate: new Date(Date.now() + 90 * 24 * 60 * 60 * 1000), // 3 mois
+    completed: false,
+  },
+  {
+    title: 'LinkedIn: 1500 Profile Views/mois',
+    description: 'Augmenter visibilité profil',
+    category: 'LINKEDIN',
+    currentValue: 0,
+    targetValue: 1500,
+    unit: 'vues',
     targetDate: new Date(Date.now() + 90 * 24 * 60 * 60 * 1000),
-    progress: 45,
     completed: false,
   },
   {
-    title: 'Generer 5000€ MRR en freelance',
-    description: 'Revenu mensuel recurrent via clients retainer',
-    targetDate: new Date(Date.now() + 60 * 24 * 60 * 60 * 1000),
-    progress: 60,
-    completed: false,
-  },
-  {
-    title: 'Lancer formation en ligne',
-    description: 'Cours complet "Marketing Freelance de A a Z"',
-    targetDate: new Date(Date.now() + 120 * 24 * 60 * 60 * 1000),
-    progress: 25,
-    completed: false,
-  },
-  {
-    title: 'Obtenir Top Rated sur Upwork',
-    description: 'Maintenir 100% job success score et completeness rating',
-    targetDate: new Date(Date.now() + 45 * 24 * 60 * 60 * 1000),
-    progress: 70,
-    completed: false,
-  },
-  {
-    title: 'Publier 100 posts de qualite',
-    description: 'Contenu educatif sur toutes plateformes sociales',
-    targetDate: new Date(Date.now() + 75 * 24 * 60 * 60 * 1000),
-    progress: 35,
-    completed: false,
-  },
-  {
-    title: 'Construire portfolio de 20 cas clients',
-    description: 'Success stories detaillees avec resultats mesurables',
+    title: 'LinkedIn: 15 Leads Qualifiés/mois',
+    description: 'Générer leads via InMail et posts',
+    category: 'LINKEDIN',
+    currentValue: 0,
+    targetValue: 15,
+    unit: 'leads',
     targetDate: new Date(Date.now() + 90 * 24 * 60 * 60 * 1000),
-    progress: 40,
+    completed: false,
+  },
+
+  // TikTok
+  {
+    title: 'TikTok: 3000 Followers',
+    description: 'Construire audience tech creator',
+    category: 'TIKTOK',
+    currentValue: 0,
+    targetValue: 3000,
+    unit: 'followers',
+    targetDate: new Date(Date.now() + 180 * 24 * 60 * 60 * 1000), // 6 mois
     completed: false,
   },
   {
-    title: 'Etablir 3 partenariats strategiques',
-    description: 'Collaborations long-terme avec agences et marques',
-    targetDate: new Date(Date.now() + 80 * 24 * 60 * 60 * 1000),
-    progress: 20,
+    title: 'TikTok: 5000 Vues/vidéo (moyenne)',
+    description: 'Améliorer reach vidéos',
+    category: 'TIKTOK',
+    currentValue: 0,
+    targetValue: 5000,
+    unit: 'vues',
+    targetDate: new Date(Date.now() + 90 * 24 * 60 * 60 * 1000),
+    completed: false,
+  },
+
+  // Instagram
+  {
+    title: 'Instagram: 2000 Followers',
+    description: 'Développer présence dev',
+    category: 'INSTAGRAM',
+    currentValue: 0,
+    targetValue: 2000,
+    unit: 'followers',
+    targetDate: new Date(Date.now() + 180 * 24 * 60 * 60 * 1000),
+    completed: false,
+  },
+  {
+    title: 'Instagram: 3000 Reach/post',
+    description: 'Augmenter portée publications',
+    category: 'INSTAGRAM',
+    currentValue: 0,
+    targetValue: 3000,
+    unit: 'reach',
+    targetDate: new Date(Date.now() + 90 * 24 * 60 * 60 * 1000),
+    completed: false,
+  },
+
+  // Business
+  {
+    title: '6 Clients Signés',
+    description: 'Convertir leads en clients payants',
+    category: 'BUSINESS',
+    currentValue: 0,
+    targetValue: 6,
+    unit: 'clients',
+    targetDate: new Date(Date.now() + 90 * 24 * 60 * 60 * 1000),
+    completed: false,
+  },
+  {
+    title: '30 Leads Qualifiés',
+    description: 'Pipeline de prospects chauds',
+    category: 'BUSINESS',
+    currentValue: 0,
+    targetValue: 30,
+    unit: 'leads',
+    targetDate: new Date(Date.now() + 90 * 24 * 60 * 60 * 1000),
+    completed: false,
+  },
+
+  // Content
+  {
+    title: '50+ Posts LinkedIn',
+    description: 'Contenu régulier de qualité',
+    category: 'CONTENT',
+    currentValue: 0,
+    targetValue: 50,
+    unit: 'posts',
+    targetDate: new Date(Date.now() + 90 * 24 * 60 * 60 * 1000),
+    completed: false,
+  },
+  {
+    title: '180+ Vidéos TikTok/IG',
+    description: '2 vidéos/jour pendant 3 mois',
+    category: 'CONTENT',
+    currentValue: 0,
+    targetValue: 180,
+    unit: 'vidéos',
+    targetDate: new Date(Date.now() + 90 * 24 * 60 * 60 * 1000),
+    completed: false,
+  },
+
+  // Facebook
+  {
+    title: 'Facebook: 20 Groupes Actifs',
+    description: 'Rejoindre et être actif dans groupes pertinents',
+    category: 'FACEBOOK',
+    currentValue: 0,
+    targetValue: 20,
+    unit: 'groupes',
+    targetDate: new Date(Date.now() + 90 * 24 * 60 * 60 * 1000),
     completed: false,
   },
 ];
