@@ -6,7 +6,7 @@ import { fr } from 'date-fns/locale';
 import { Plus, Trash2, Edit2, X, Save, Target, TrendingUp, Award, PlusCircle, MinusCircle, Zap, Trophy } from 'lucide-react';
 import { Goal } from '@/types';
 import { getGoals, addGoal, updateGoal, deleteGoal } from '@/lib/storage';
-import { initialGoals } from '@/lib/initial-data';
+// import { initialGoals } from '@/lib/initial-data'; // Plus nécessaire
 
 export default function GoalsTracker() {
   const [goals, setGoals] = useState<Goal[]>([]);
@@ -33,13 +33,9 @@ export default function GoalsTracker() {
     console.log('🎯 Loading goals...');
     const storedGoals = getGoals();
     console.log('🎯 Stored goals:', storedGoals);
-    if (storedGoals.length === 0) {
-      console.log('🎯 No goals found, adding initial goals');
-      initialGoals.forEach((goal) => addGoal(goal));
-      setGoals(getGoals());
-    } else {
-      setGoals(storedGoals);
-    }
+    setGoals(storedGoals);
+    // Note: Ne plus recréer automatiquement les objectifs initiaux
+    // L'utilisateur doit créer ses propres objectifs
   };
 
   const handleSubmit = (e: React.FormEvent) => {
