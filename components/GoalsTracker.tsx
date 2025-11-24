@@ -181,18 +181,23 @@ export default function GoalsTracker() {
 
               <div>
                 <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
-                  Progression ({formData.progress}%)
+                  Progression (%)
                 </label>
                 <input
-                  type="range"
+                  type="number"
                   min="0"
                   max="100"
                   value={formData.progress}
-                  onChange={(e) =>
-                    setFormData({ ...formData, progress: parseInt(e.target.value) })
-                  }
-                  className="w-full h-3 bg-gray-200 dark:bg-gray-700 rounded-lg appearance-none cursor-pointer accent-blue-500"
+                  onChange={(e) => {
+                    const val = Math.min(100, Math.max(0, parseInt(e.target.value) || 0));
+                    setFormData({ ...formData, progress: val });
+                  }}
+                  className="w-full px-4 py-3 rounded-xl border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 text-gray-900 dark:text-white focus:ring-2 focus:ring-blue-500 outline-none"
+                  placeholder="0-100"
                 />
+                <p className="text-xs text-gray-500 dark:text-gray-400 mt-1">
+                  Entrez une valeur entre 0 et 100
+                </p>
               </div>
             </div>
 
@@ -267,9 +272,22 @@ export default function GoalsTracker() {
                     <span className="text-sm font-medium text-gray-700 dark:text-gray-300">
                       Progression
                     </span>
-                    <span className="text-sm font-bold text-blue-600 dark:text-blue-400">
-                      {goal.progress}%
-                    </span>
+                    <div className="flex items-center gap-2">
+                      <input
+                        type="number"
+                        min="0"
+                        max="100"
+                        value={goal.progress}
+                        onChange={(e) => {
+                          const val = Math.min(100, Math.max(0, parseInt(e.target.value) || 0));
+                          handleProgressChange(goal.id, val);
+                        }}
+                        className="w-20 px-3 py-1 rounded-lg border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 text-gray-900 dark:text-white text-center focus:ring-2 focus:ring-blue-500 outline-none"
+                      />
+                      <span className="text-sm font-bold text-blue-600 dark:text-blue-400">
+                        %
+                      </span>
+                    </div>
                   </div>
 
                   <div className="relative h-3 bg-gray-200 dark:bg-gray-700 rounded-full overflow-hidden">
@@ -278,17 +296,6 @@ export default function GoalsTracker() {
                       style={{ width: `${goal.progress}%` }}
                     />
                   </div>
-
-                  <input
-                    type="range"
-                    min="0"
-                    max="100"
-                    value={goal.progress}
-                    onChange={(e) =>
-                      handleProgressChange(goal.id, parseInt(e.target.value))
-                    }
-                    className="w-full mt-2 h-2 bg-transparent rounded-lg appearance-none cursor-pointer accent-blue-500"
-                  />
                 </div>
 
                 <p className="text-sm text-gray-600 dark:text-gray-400">
