@@ -87,6 +87,7 @@ export default function ContentManager() {
       scheduledTime: '',
     });
     setShowForm(false);
+    setEditingId(null);
   };
 
   if (!mounted) return null;

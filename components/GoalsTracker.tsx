@@ -115,6 +115,7 @@ export default function GoalsTracker() {
       targetDate: '',
     });
     setShowForm(false);
+    setEditingId(null);
   };
 
   const calculateProgress = (current: number, target: number) => {

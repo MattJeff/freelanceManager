@@ -94,6 +94,7 @@ export default function ContactsManager() {
       notes: '',
     });
     setShowForm(false);
+    setEditingId(null);
   };
 
   if (!mounted) return null;

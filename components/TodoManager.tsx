@@ -111,6 +111,7 @@ export default function TodoManager() {
       dueTime: '',
     });
     setShowForm(false);
+    setEditingId(null);
   };
 
   const handleAddSubtask = (todoId: string) => {
