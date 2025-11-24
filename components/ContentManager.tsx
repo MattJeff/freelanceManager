@@ -114,6 +114,10 @@ export default function ContentManager() {
     FACEBOOK: '👥',
     TIKTOK: '🎵',
     YOUTUBE: '🎥',
+    MALT: '🔧',
+    UPWORK: '💻',
+    FIVERR: '🟢',
+    FREELANCER: '📋',
   };
 
   return (
@@ -184,12 +188,20 @@ export default function ContentManager() {
                   }}
                   className="w-full px-4 py-3.5 rounded-2xl border-2 border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 text-gray-900 dark:text-white focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500 outline-none transition-all text-base"
                 >
-                  <option value="LINKEDIN">{platformEmojis.LINKEDIN} LinkedIn</option>
-                  <option value="TWITTER">{platformEmojis.TWITTER} Twitter</option>
-                  <option value="INSTAGRAM">{platformEmojis.INSTAGRAM} Instagram</option>
-                  <option value="FACEBOOK">{platformEmojis.FACEBOOK} Facebook</option>
-                  <option value="TIKTOK">{platformEmojis.TIKTOK} TikTok</option>
-                  <option value="YOUTUBE">{platformEmojis.YOUTUBE} YouTube</option>
+                  <optgroup label="Réseaux sociaux">
+                    <option value="LINKEDIN">{platformEmojis.LINKEDIN} LinkedIn</option>
+                    <option value="TWITTER">{platformEmojis.TWITTER} Twitter</option>
+                    <option value="INSTAGRAM">{platformEmojis.INSTAGRAM} Instagram</option>
+                    <option value="FACEBOOK">{platformEmojis.FACEBOOK} Facebook</option>
+                    <option value="TIKTOK">{platformEmojis.TIKTOK} TikTok</option>
+                    <option value="YOUTUBE">{platformEmojis.YOUTUBE} YouTube</option>
+                  </optgroup>
+                  <optgroup label="Plateformes Freelance">
+                    <option value="MALT">{platformEmojis.MALT} Malt</option>
+                    <option value="UPWORK">{platformEmojis.UPWORK} Upwork</option>
+                    <option value="FIVERR">{platformEmojis.FIVERR} Fiverr</option>
+                    <option value="FREELANCER">{platformEmojis.FREELANCER} Freelancer</option>
+                  </optgroup>
                 </select>
               </div>
 
