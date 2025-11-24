@@ -175,7 +175,7 @@ export default function ContactsManager() {
                   required
                   value={formData.name}
                   onChange={(e) => setFormData({ ...formData, name: e.target.value })}
-                  className="w-full px-4 py-3 rounded-2xl border-2 border-gray-200 dark:border-gray-600 bg-white dark:bg-gray-700 text-gray-900 dark:text-white placeholder-gray-400 focus:border-purple-500 dark:focus:border-purple-400 focus:ring-4 focus:ring-purple-500/10 outline-none transition-all"
+                  className="w-full px-4 py-3 rounded-2xl border-2 border-gray-200 dark:border-gray-600 bg-white dark:bg-gray-700 text-gray-900 dark:text-white placeholder-gray-400 focus:border-orange-500 dark:focus:border-orange-400 focus:ring-4 focus:ring-orange-500/10 outline-none transition-all"
                   placeholder="Jean Dupont"
                 />
               </div>
@@ -191,7 +191,7 @@ export default function ContactsManager() {
                     type="email"
                     value={formData.email}
                     onChange={(e) => setFormData({ ...formData, email: e.target.value })}
-                    className="w-full px-4 py-3 rounded-2xl border-2 border-gray-200 dark:border-gray-600 bg-white dark:bg-gray-700 text-gray-900 dark:text-white placeholder-gray-400 focus:border-purple-500 dark:focus:border-purple-400 focus:ring-4 focus:ring-purple-500/10 outline-none transition-all"
+                    className="w-full px-4 py-3 rounded-2xl border-2 border-gray-200 dark:border-gray-600 bg-white dark:bg-gray-700 text-gray-900 dark:text-white placeholder-gray-400 focus:border-orange-500 dark:focus:border-orange-400 focus:ring-4 focus:ring-orange-500/10 outline-none transition-all"
                     placeholder="jean@example.com"
                   />
                 </div>
@@ -206,7 +206,7 @@ export default function ContactsManager() {
                     type="tel"
                     value={formData.phone}
                     onChange={(e) => setFormData({ ...formData, phone: e.target.value })}
-                    className="w-full px-4 py-3 rounded-2xl border-2 border-gray-200 dark:border-gray-600 bg-white dark:bg-gray-700 text-gray-900 dark:text-white placeholder-gray-400 focus:border-purple-500 dark:focus:border-purple-400 focus:ring-4 focus:ring-purple-500/10 outline-none transition-all"
+                    className="w-full px-4 py-3 rounded-2xl border-2 border-gray-200 dark:border-gray-600 bg-white dark:bg-gray-700 text-gray-900 dark:text-white placeholder-gray-400 focus:border-orange-500 dark:focus:border-orange-400 focus:ring-4 focus:ring-orange-500/10 outline-none transition-all"
                     placeholder="+33 6 12 34 56 78"
                   />
                 </div>
@@ -221,7 +221,7 @@ export default function ContactsManager() {
                     type="text"
                     value={formData.company}
                     onChange={(e) => setFormData({ ...formData, company: e.target.value })}
-                    className="w-full px-4 py-3 rounded-2xl border-2 border-gray-200 dark:border-gray-600 bg-white dark:bg-gray-700 text-gray-900 dark:text-white placeholder-gray-400 focus:border-purple-500 dark:focus:border-purple-400 focus:ring-4 focus:ring-purple-500/10 outline-none transition-all"
+                    className="w-full px-4 py-3 rounded-2xl border-2 border-gray-200 dark:border-gray-600 bg-white dark:bg-gray-700 text-gray-900 dark:text-white placeholder-gray-400 focus:border-orange-500 dark:focus:border-orange-400 focus:ring-4 focus:ring-orange-500/10 outline-none transition-all"
                     placeholder="Tech Corp"
                   />
                 </div>
@@ -237,7 +237,7 @@ export default function ContactsManager() {
                     onChange={(e) =>
                       setFormData({ ...formData, platform: e.target.value as Platform })
                     }
-                    className="w-full px-4 py-3 rounded-2xl border-2 border-gray-200 dark:border-gray-600 bg-white dark:bg-gray-700 text-gray-900 dark:text-white focus:border-purple-500 dark:focus:border-purple-400 focus:ring-4 focus:ring-purple-500/10 outline-none transition-all"
+                    className="w-full px-4 py-3 rounded-2xl border-2 border-gray-200 dark:border-gray-600 bg-white dark:bg-gray-700 text-gray-900 dark:text-white focus:border-orange-500 dark:focus:border-orange-400 focus:ring-4 focus:ring-orange-500/10 outline-none transition-all"
                   >
                     <option value="LINKEDIN">LinkedIn</option>
                     <option value="TWITTER">Twitter</option>
@@ -258,7 +258,7 @@ export default function ContactsManager() {
                     onChange={(e) =>
                       setFormData({ ...formData, status: e.target.value as ContactStatus })
                     }
-                    className="w-full px-4 py-3 rounded-2xl border-2 border-gray-200 dark:border-gray-600 bg-white dark:bg-gray-700 text-gray-900 dark:text-white focus:border-purple-500 dark:focus:border-purple-400 focus:ring-4 focus:ring-purple-500/10 outline-none transition-all"
+                    className="w-full px-4 py-3 rounded-2xl border-2 border-gray-200 dark:border-gray-600 bg-white dark:bg-gray-700 text-gray-900 dark:text-white focus:border-orange-500 dark:focus:border-orange-400 focus:ring-4 focus:ring-orange-500/10 outline-none transition-all"
                   >
                     <option value="ACTIVE">✅ Actif</option>
                     <option value="PENDING">⏳ En attente</option>
@@ -276,7 +276,7 @@ export default function ContactsManager() {
                   value={formData.notes}
                   onChange={(e) => setFormData({ ...formData, notes: e.target.value })}
                   rows={3}
-                  className="w-full px-4 py-3 rounded-2xl border-2 border-gray-200 dark:border-gray-600 bg-white dark:bg-gray-700 text-gray-900 dark:text-white placeholder-gray-400 focus:border-purple-500 dark:focus:border-purple-400 focus:ring-4 focus:ring-purple-500/10 outline-none transition-all resize-none"
+                  className="w-full px-4 py-3 rounded-2xl border-2 border-gray-200 dark:border-gray-600 bg-white dark:bg-gray-700 text-gray-900 dark:text-white placeholder-gray-400 focus:border-orange-500 dark:focus:border-orange-400 focus:ring-4 focus:ring-orange-500/10 outline-none transition-all resize-none"
                   placeholder="Informations supplémentaires..."
                 />
               </div>
@@ -297,7 +297,7 @@ export default function ContactsManager() {
           {contacts.length === 0 ? (
             <div className="col-span-full bg-white/80 dark:bg-gray-800/80 backdrop-blur-lg rounded-3xl shadow-xl border border-gray-200 dark:border-gray-700 p-12 text-center">
               <div className="w-20 h-20 mx-auto mb-4 rounded-full bg-gradient-to-br from-orange-100 to-yellow-100 dark:from-orange-900/30 dark:to-yellow-900/30 flex items-center justify-center">
-                <Users className="w-10 h-10 text-purple-500 dark:text-purple-400" />
+                <Users className="w-10 h-10 text-orange-500 dark:text-orange-400" />
               </div>
               <h3 className="text-xl font-semibold text-gray-800 dark:text-white mb-2">
                 Aucun contact
@@ -337,7 +337,7 @@ export default function ContactsManager() {
                   <div className="flex gap-2 flex-shrink-0">
                     <button
                       onClick={() => handleEdit(contact)}
-                      className="p-2 hover:bg-purple-50 dark:hover:bg-purple-900/30 text-purple-600 dark:text-purple-400 rounded-xl transition-all"
+                      className="p-2 hover:bg-orange-50 dark:hover:bg-orange-900/30 text-orange-600 dark:text-orange-400 rounded-xl transition-all"
                     >
                       <svg
                         className="w-4 h-4"
@@ -368,7 +368,7 @@ export default function ContactsManager() {
                       <Mail className="w-4 h-4 flex-shrink-0" />
                       <a
                         href={`mailto:${contact.email}`}
-                        className="hover:text-purple-600 dark:hover:text-purple-400 transition-colors truncate"
+                        className="hover:text-orange-600 dark:hover:text-orange-400 transition-colors truncate"
                       >
                         {contact.email}
                       </a>
@@ -379,7 +379,7 @@ export default function ContactsManager() {
                       <Phone className="w-4 h-4 flex-shrink-0" />
                       <a
                         href={`tel:${contact.phone}`}
-                        className="hover:text-purple-600 dark:hover:text-purple-400 transition-colors"
+                        className="hover:text-orange-600 dark:hover:text-orange-400 transition-colors"
                       >
                         {contact.phone}
                       </a>
@@ -394,7 +394,7 @@ export default function ContactsManager() {
                 )}
 
                 <div className="flex items-center gap-2 flex-wrap">
-                  <span className="inline-flex items-center gap-1 px-3 py-1 rounded-full bg-purple-100 dark:bg-purple-900/30 text-purple-700 dark:text-purple-300 text-xs font-medium">
+                  <span className="inline-flex items-center gap-1 px-3 py-1 rounded-full bg-orange-100 dark:bg-orange-900/30 text-orange-700 dark:text-orange-300 text-xs font-medium">
                     <Tag className="w-3 h-3" />
                     {contact.platform}
                   </span>

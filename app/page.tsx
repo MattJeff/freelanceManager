@@ -68,12 +68,12 @@ export default function Home() {
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-blue-50 via-white to-purple-50 dark:from-gray-900 dark:via-gray-800 dark:to-gray-900">
+    <div className="min-h-screen bg-gradient-to-br from-orange-50 via-white to-yellow-50 dark:from-gray-900 dark:via-gray-800 dark:to-gray-900">
       <div className="container mx-auto px-4 py-8">
         {/* Header */}
         <header className="mb-8">
           <div className="text-center">
-            <h1 className="text-4xl md:text-5xl font-bold mb-2 bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text text-transparent">
+            <h1 className="text-4xl md:text-5xl font-bold mb-2 bg-gradient-to-r from-orange-600 to-orange-600 bg-clip-text text-transparent">
               Freelance Manager
             </h1>
             <p className="text-gray-600 dark:text-gray-400 text-lg">
@@ -95,7 +95,7 @@ export default function Home() {
                     onClick={() => setActiveTab(tab.id)}
                     className={`flex flex-col items-center justify-center gap-2 p-4 rounded-xl transition-all duration-300 ${
                       isActive
-                        ? 'bg-gradient-to-br from-blue-500 to-purple-500 text-white shadow-lg scale-105'
+                        ? 'bg-gradient-to-br from-orange-500 to-yellow-500 text-white shadow-lg scale-105'
                         : 'hover:bg-gray-100 dark:hover:bg-gray-700 text-gray-700 dark:text-gray-300'
                     }`}
                   >

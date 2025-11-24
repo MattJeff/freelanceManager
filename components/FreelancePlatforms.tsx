@@ -83,7 +83,7 @@ export default function FreelancePlatforms() {
         {/* Progress bar */}
         <div className="relative h-3 bg-gray-200 dark:bg-gray-700 rounded-full overflow-hidden">
           <div
-            className="absolute inset-y-0 left-0 bg-gradient-to-r from-blue-500 to-purple-500 rounded-full transition-all duration-500"
+            className="absolute inset-y-0 left-0 bg-gradient-to-r from-blue-500 to-orange-500 rounded-full transition-all duration-500"
             style={{
               width: `${(completedCount / freelancePlatforms.length) * 100}%`,
             }}
@@ -177,7 +177,7 @@ export default function FreelancePlatforms() {
                           className={`px-3 py-1 rounded-full text-xs font-medium ${
                             platform.category === 'freelance'
                               ? 'bg-blue-100 text-blue-700 dark:bg-blue-900/30 dark:text-blue-400'
-                              : 'bg-purple-100 text-purple-700 dark:bg-purple-900/30 dark:text-purple-400'
+                              : 'bg-orange-100 text-orange-700 dark:bg-orange-900/30 dark:text-orange-400'
                           }`}
                         >
                           {platform.category === 'freelance'
@@ -247,7 +247,7 @@ export default function FreelancePlatforms() {
                       {/* Tips */}
                       <div>
                         <h4 className="font-bold text-gray-800 dark:text-white mb-3 flex items-center gap-2">
-                          <Share2 className="w-5 h-5 text-purple-500" />
+                          <Share2 className="w-5 h-5 text-orange-500" />
                           Conseils & Astuces
                         </h4>
                         <ul className="space-y-2">
@@ -256,7 +256,7 @@ export default function FreelancePlatforms() {
                               key={index}
                               className="flex gap-3 text-sm text-gray-700 dark:text-gray-300"
                             >
-                              <span className="text-purple-500 flex-shrink-0">
+                              <span className="text-orange-500 flex-shrink-0">
                                 •
                               </span>
                               <span>{tip}</span>
@@ -271,7 +271,7 @@ export default function FreelancePlatforms() {
                       {!hasAccount && (
                         <button
                           onClick={() => handleToggleAccount(platform.id)}
-                          className="flex items-center gap-2 px-6 py-3 bg-gradient-to-r from-blue-500 to-purple-500 text-white rounded-xl hover:shadow-lg transition-all duration-300 hover:scale-105"
+                          className="flex items-center gap-2 px-6 py-3 bg-gradient-to-r from-blue-500 to-orange-500 text-white rounded-xl hover:shadow-lg transition-all duration-300 hover:scale-105"
                         >
                           <CheckCircle2 className="w-5 h-5" />
                           Marquer comme configure
@@ -297,7 +297,7 @@ export default function FreelancePlatforms() {
       </div>
 
       {/* Summary Card */}
-      <div className="bg-gradient-to-r from-blue-500 to-purple-500 rounded-2xl shadow-lg p-6 text-white">
+      <div className="bg-gradient-to-r from-blue-500 to-orange-500 rounded-2xl shadow-lg p-6 text-white">
         <h3 className="text-xl font-bold mb-4">Strategie Multi-Plateformes</h3>
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4 text-sm">
           <div>

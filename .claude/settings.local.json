@@ -8,7 +8,15 @@
       "Bash(git commit:*)",
       "Bash(git remote add:*)",
       "Bash(git branch:*)",
-      "Bash(git push:*)"
+      "Bash(git push:*)",
+      "Bash(npm run build:*)",
+      "Bash(for file in components/*.tsx app/*.tsx)",
+      "Bash(do)",
+      "Bash([ -f \"$file\" ])",
+      "Bash(\"$file\")",
+      "Bash(done)",
+      "Bash(for file in components/DailyPlanner.tsx app/page.tsx)",
+      "Bash(app/page.tsx)"
     ],
     "deny": [],
     "ask": []

@@ -518,7 +518,7 @@ export default function GoalsTracker() {
                           </button>
                           <button
                             onClick={() => incrementValue(goal.id, 100)}
-                            className="flex-1 px-3 py-2.5 text-xs font-bold bg-purple-100 dark:bg-purple-900/30 text-purple-700 dark:text-purple-300 rounded-xl hover:bg-purple-200 dark:hover:bg-purple-900/50 transition-all hover:scale-105"
+                            className="flex-1 px-3 py-2.5 text-xs font-bold bg-orange-100 dark:bg-orange-900/30 text-orange-700 dark:text-orange-300 rounded-xl hover:bg-orange-200 dark:hover:bg-orange-900/50 transition-all hover:scale-105"
                           >
                             +100
                           </button>

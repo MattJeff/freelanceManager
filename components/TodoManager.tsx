@@ -316,7 +316,7 @@ export default function TodoManager() {
               {/* Submit Button */}
               <button
                 type="submit"
-                className="w-full py-4 bg-gradient-to-r from-orange-500 to-yellow-500 hover:from-blue-600 hover:to-purple-600 text-white rounded-2xl font-semibold shadow-lg hover:shadow-xl transition-all duration-300 transform hover:scale-[1.02]"
+                className="w-full py-4 bg-gradient-to-r from-orange-500 to-yellow-500 hover:from-blue-600 hover:to-orange-600 text-white rounded-2xl font-semibold shadow-lg hover:shadow-xl transition-all duration-300 transform hover:scale-[1.02]"
               >
                 {editingId ? 'Mettre à jour' : 'Créer la tâche'}
               </button>
@@ -328,7 +328,7 @@ export default function TodoManager() {
         <div className="space-y-4">
           {todos.length === 0 ? (
             <div className="bg-white/80 dark:bg-gray-800/80 backdrop-blur-lg rounded-3xl shadow-xl border border-gray-200 dark:border-gray-700 p-12 text-center">
-              <div className="w-20 h-20 mx-auto mb-4 rounded-full bg-gradient-to-br from-blue-100 to-purple-100 dark:from-blue-900/30 dark:to-purple-900/30 flex items-center justify-center">
+              <div className="w-20 h-20 mx-auto mb-4 rounded-full bg-gradient-to-br from-blue-100 to-orange-100 dark:from-blue-900/30 dark:to-orange-900/30 flex items-center justify-center">
                 <CheckCircle2 className="w-10 h-10 text-blue-500 dark:text-blue-400" />
               </div>
               <h3 className="text-xl font-semibold text-gray-800 dark:text-white mb-2">
@@ -339,7 +339,7 @@ export default function TodoManager() {
               </p>
               <button
                 onClick={() => setShowForm(true)}
-                className="inline-flex items-center gap-2 px-6 py-3 bg-gradient-to-r from-orange-500 to-yellow-500 hover:from-blue-600 hover:to-purple-600 text-white rounded-2xl font-medium shadow-lg hover:shadow-xl transition-all duration-300 transform hover:scale-105"
+                className="inline-flex items-center gap-2 px-6 py-3 bg-gradient-to-r from-orange-500 to-yellow-500 hover:from-blue-600 hover:to-orange-600 text-white rounded-2xl font-medium shadow-lg hover:shadow-xl transition-all duration-300 transform hover:scale-105"
               >
                 <Plus className="w-5 h-5" />
                 Créer une tâche
@@ -468,7 +468,7 @@ export default function TodoManager() {
 
                       {/* Platform Badge */}
                       {todo.platform && (
-                        <span className="inline-flex items-center gap-1 px-3 py-1 rounded-full bg-purple-100 dark:bg-purple-900/30 text-purple-700 dark:text-purple-300 text-xs font-medium">
+                        <span className="inline-flex items-center gap-1 px-3 py-1 rounded-full bg-orange-100 dark:bg-orange-900/30 text-orange-700 dark:text-orange-300 text-xs font-medium">
                           <Tag className="w-3 h-3" />
                           {todo.platform}
                         </span>

@@ -124,7 +124,7 @@ export default function TemplatesLibrary() {
                   </button>
                 </div>
 
-                <span className="inline-block px-3 py-1 rounded-full bg-purple-100 text-purple-700 dark:bg-purple-900/30 dark:text-purple-400 text-xs font-medium">
+                <span className="inline-block px-3 py-1 rounded-full bg-orange-100 text-orange-700 dark:bg-orange-900/30 dark:text-orange-400 text-xs font-medium">
                   {template.category}
                 </span>
               </div>
@@ -172,7 +172,7 @@ export default function TemplatesLibrary() {
       </div>
 
       {/* Quick Stats */}
-      <div className="bg-gradient-to-r from-blue-500 to-purple-500 rounded-2xl shadow-lg p-6 text-white">
+      <div className="bg-gradient-to-r from-blue-500 to-orange-500 rounded-2xl shadow-lg p-6 text-white">
         <h3 className="text-xl font-bold mb-4">Conseils d'utilisation</h3>
         <ul className="space-y-2 text-sm">
           <li className="flex items-start gap-2">

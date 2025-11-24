@@ -341,7 +341,7 @@ export default function DailyPlanner() {
       <div className="bg-white dark:bg-gray-800 rounded-2xl shadow-lg p-6">
         <div className="flex items-center justify-between mb-4">
           <div className="flex items-center gap-3">
-            <Calendar className="w-8 h-8 text-blue-500" />
+            <Calendar className="w-8 h-8 text-orange-500" />
             <div>
               <h2 className="text-2xl font-bold text-gray-800 dark:text-white">
                 Planning Quotidien
@@ -362,7 +362,7 @@ export default function DailyPlanner() {
             </button>
             <button
               onClick={() => setSelectedDate(new Date())}
-              className="px-4 py-2 text-sm font-medium text-blue-600 dark:text-blue-400 hover:bg-blue-50 dark:hover:bg-blue-900/30 rounded-lg transition-colors"
+              className="px-4 py-2 text-sm font-medium text-orange-600 dark:text-orange-400 hover:bg-orange-50 dark:hover:bg-orange-900/30 rounded-lg transition-colors"
             >
               Aujourd'hui
             </button>
@@ -382,7 +382,7 @@ export default function DailyPlanner() {
               <span className="text-sm text-gray-600 dark:text-gray-400">
                 {completedTodos} / {totalTodos} tâches complétées
               </span>
-              <span className="text-sm font-medium text-blue-600 dark:text-blue-400">
+              <span className="text-sm font-medium text-orange-600 dark:text-orange-400">
                 {Math.round(progressPercent)}%
               </span>
             </div>
@@ -399,14 +399,14 @@ export default function DailyPlanner() {
         <div className="flex gap-2">
           <button
             onClick={() => openNewForm('todo')}
-            className="flex items-center gap-2 px-4 py-2 bg-blue-500 text-white rounded-lg hover:bg-blue-600 transition-colors text-sm"
+            className="flex items-center gap-2 px-4 py-2 bg-orange-500 text-white rounded-lg hover:bg-blue-600 transition-colors text-sm"
           >
             <Plus className="w-4 h-4" />
             Tâche
           </button>
           <button
             onClick={() => openNewForm('post')}
-            className="flex items-center gap-2 px-4 py-2 bg-purple-500 text-white rounded-lg hover:bg-purple-600 transition-colors text-sm"
+            className="flex items-center gap-2 px-4 py-2 bg-orange-500 text-white rounded-lg hover:bg-orange-600 transition-colors text-sm"
           >
             <Plus className="w-4 h-4" />
             Post
@@ -615,7 +615,7 @@ export default function DailyPlanner() {
 
               <button
                 type="submit"
-                className="w-full flex items-center justify-center gap-2 px-6 py-3 bg-gradient-to-r from-purple-500 to-pink-500 text-white rounded-xl hover:shadow-lg transition-all duration-300 hover:scale-105"
+                className="w-full flex items-center justify-center gap-2 px-6 py-3 bg-gradient-to-r from-orange-500 to-yellow-500 text-white rounded-xl hover:shadow-lg transition-all duration-300 hover:scale-105"
               >
                 <Save className="w-5 h-5" />
                 {editingId ? 'Mettre à jour' : 'Ajouter'}
@@ -744,7 +744,7 @@ export default function DailyPlanner() {
         {sortedTodos.length > 0 && (
           <div className="bg-white dark:bg-gray-800 rounded-2xl shadow-lg p-6">
             <h3 className="text-lg font-bold text-gray-800 dark:text-white mb-4 flex items-center gap-2">
-              <ListTodo className="w-5 h-5 text-blue-500" />
+              <ListTodo className="w-5 h-5 text-orange-500" />
               Tâches ({sortedTodos.length})
             </h3>
 
@@ -762,7 +762,7 @@ export default function DailyPlanner() {
                       {todo.completed ? (
                         <CheckCircle2 className="w-5 h-5 text-green-500" />
                       ) : (
-                        <Circle className="w-5 h-5 text-gray-400 hover:text-blue-500 transition-colors" />
+                        <Circle className="w-5 h-5 text-gray-400 hover:text-orange-500 transition-colors" />
                       )}
                     </button>
 
@@ -788,7 +788,7 @@ export default function DailyPlanner() {
                         <div className="flex gap-2 ml-4">
                           <button
                             onClick={() => handleEditTodo(todo)}
-                            className="p-1.5 text-blue-500 hover:bg-blue-50 dark:hover:bg-blue-900/30 rounded-lg transition-all"
+                            className="p-1.5 text-orange-500 hover:bg-orange-50 dark:hover:bg-orange-900/30 rounded-lg transition-all"
                           >
                             <Edit2 className="w-4 h-4" />
                           </button>
@@ -820,7 +820,7 @@ export default function DailyPlanner() {
                           {todo.priority}
                         </span>
                         {todo.platform && (
-                          <span className="text-xs px-2 py-1 rounded-full bg-blue-100 text-blue-700 dark:bg-blue-900/30 dark:text-blue-400 font-medium">
+                          <span className="text-xs px-2 py-1 rounded-full bg-blue-100 text-blue-700 dark:bg-orange-900/30 dark:text-orange-400 font-medium">
                             {todo.platform}
                           </span>
                         )}
@@ -837,7 +837,7 @@ export default function DailyPlanner() {
         {sortedPosts.length > 0 && (
           <div className="bg-white dark:bg-gray-800 rounded-2xl shadow-lg p-6">
             <h3 className="text-lg font-bold text-gray-800 dark:text-white mb-4 flex items-center gap-2">
-              <FileText className="w-5 h-5 text-purple-500" />
+              <FileText className="w-5 h-5 text-orange-500" />
               Posts planifiés ({sortedPosts.length})
             </h3>
 
@@ -849,7 +849,7 @@ export default function DailyPlanner() {
                 >
                   <div className="flex items-start justify-between mb-3">
                     <div className="flex items-center gap-2">
-                      <span className="px-3 py-1 rounded-full bg-purple-100 text-purple-700 dark:bg-purple-900/30 dark:text-purple-400 text-sm font-medium">
+                      <span className="px-3 py-1 rounded-full bg-orange-100 text-orange-700 dark:bg-orange-900/30 dark:text-orange-400 text-sm font-medium">
                         {post.platform}
                       </span>
                       {post.scheduledFor && (
@@ -863,7 +863,7 @@ export default function DailyPlanner() {
                     <div className="flex gap-2">
                       <button
                         onClick={() => handleEditPost(post)}
-                        className="p-1.5 text-blue-500 hover:bg-blue-50 dark:hover:bg-blue-900/30 rounded-lg transition-all"
+                        className="p-1.5 text-orange-500 hover:bg-orange-50 dark:hover:bg-orange-900/30 rounded-lg transition-all"
                       >
                         <Edit2 className="w-4 h-4" />
                       </button>
@@ -920,7 +920,7 @@ export default function DailyPlanner() {
                     <div className="flex gap-2">
                       <button
                         onClick={() => handleEditGoal(goal)}
-                        className="p-1.5 text-blue-500 hover:bg-blue-50 dark:hover:bg-blue-900/30 rounded-lg transition-all"
+                        className="p-1.5 text-orange-500 hover:bg-orange-50 dark:hover:bg-orange-900/30 rounded-lg transition-all"
                       >
                         <Edit2 className="w-4 h-4" />
                       </button>
@@ -964,13 +964,13 @@ export default function DailyPlanner() {
             <div className="flex justify-center gap-2">
               <button
                 onClick={() => openNewForm('todo')}
-                className="px-4 py-2 bg-blue-500 text-white rounded-lg hover:bg-blue-600 transition-colors text-sm"
+                className="px-4 py-2 bg-orange-500 text-white rounded-lg hover:bg-blue-600 transition-colors text-sm"
               >
                 Ajouter une tâche
               </button>
               <button
                 onClick={() => openNewForm('post')}
-                className="px-4 py-2 bg-purple-500 text-white rounded-lg hover:bg-purple-600 transition-colors text-sm"
+                className="px-4 py-2 bg-orange-500 text-white rounded-lg hover:bg-orange-600 transition-colors text-sm"
               >
                 Planifier un post
               </button>
