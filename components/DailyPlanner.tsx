@@ -388,7 +388,7 @@ export default function DailyPlanner() {
             </div>
             <div className="relative h-3 bg-gray-200 dark:bg-gray-700 rounded-full overflow-hidden">
               <div
-                className="absolute inset-y-0 left-0 bg-gradient-to-r from-blue-500 to-purple-500 rounded-full transition-all duration-500"
+                className="absolute inset-y-0 left-0 bg-gradient-to-r from-orange-500 to-yellow-500 rounded-full transition-all duration-500"
                 style={{ width: `${progressPercent}%` }}
               />
             </div>
@@ -537,7 +537,7 @@ export default function DailyPlanner() {
 
               <button
                 type="submit"
-                className="w-full flex items-center justify-center gap-2 px-6 py-3 bg-gradient-to-r from-blue-500 to-purple-500 text-white rounded-xl hover:shadow-lg transition-all duration-300 hover:scale-105"
+                className="w-full flex items-center justify-center gap-2 px-6 py-3 bg-gradient-to-r from-orange-500 to-yellow-500 text-white rounded-xl hover:shadow-lg transition-all duration-300 hover:scale-105"
               >
                 <Save className="w-5 h-5" />
                 {editingId ? 'Mettre à jour' : 'Ajouter'}
@@ -728,7 +728,7 @@ export default function DailyPlanner() {
 
               <button
                 type="submit"
-                className="w-full flex items-center justify-center gap-2 px-6 py-3 bg-gradient-to-r from-green-500 to-emerald-500 text-white rounded-xl hover:shadow-lg transition-all duration-300 hover:scale-105"
+                className="w-full flex items-center justify-center gap-2 px-6 py-3 bg-gradient-to-r from-orange-500 to-yellow-500 text-white rounded-xl hover:shadow-lg transition-all duration-300 hover:scale-105"
               >
                 <Save className="w-5 h-5" />
                 {editingId ? 'Mettre à jour' : 'Ajouter'}
@@ -936,7 +936,7 @@ export default function DailyPlanner() {
                   {/* Progress bar */}
                   <div className="relative h-2 bg-gray-200 dark:bg-gray-600 rounded-full overflow-hidden">
                     <div
-                      className="absolute inset-y-0 left-0 bg-gradient-to-r from-green-500 to-emerald-500 rounded-full"
+                      className="absolute inset-y-0 left-0 bg-gradient-to-r from-orange-500 to-yellow-500 rounded-full"
                       style={{
                         width: `${Math.min(
                           100,

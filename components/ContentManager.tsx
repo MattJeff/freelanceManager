@@ -121,13 +121,13 @@ export default function ContentManager() {
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-gray-50 via-emerald-50 to-green-50 dark:from-gray-900 dark:via-emerald-900/20 dark:to-green-900/20 p-4 md:p-6 lg:p-8">
+    <div className="min-h-screen bg-gradient-to-br from-gray-50 via-emerald-50 to-yellow-50 dark:from-gray-900 dark:via-emerald-900/20 dark:to-yellow-900/20 p-4 md:p-6 lg:p-8">
       <div className="max-w-7xl mx-auto space-y-6">
         {/* Header */}
         <div className="bg-white/80 dark:bg-gray-800/80 backdrop-blur-lg rounded-3xl shadow-xl border border-gray-200 dark:border-gray-700 p-6 md:p-8">
           <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4">
             <div>
-              <h1 className="text-3xl md:text-4xl font-bold bg-gradient-to-r from-emerald-600 to-green-600 dark:from-emerald-400 dark:to-green-400 bg-clip-text text-transparent mb-2">
+              <h1 className="text-3xl md:text-4xl font-bold bg-gradient-to-r from-orange-600 to-yellow-600 dark:from-orange-400 dark:to-yellow-400 bg-clip-text text-transparent mb-2">
                 Gestion du Contenu
               </h1>
               <p className="text-gray-600 dark:text-gray-400 flex flex-wrap items-center gap-3">
@@ -157,7 +157,7 @@ export default function ContentManager() {
                   setEditingId(null);
                 }
               }}
-              className="flex items-center justify-center gap-2 px-6 py-3 bg-gradient-to-r from-emerald-500 to-green-500 text-white rounded-2xl hover:shadow-xl transition-all duration-300 hover:scale-105 font-medium whitespace-nowrap"
+              className="flex items-center justify-center gap-2 px-6 py-3 bg-gradient-to-r from-orange-500 to-yellow-500 text-white rounded-2xl hover:shadow-xl transition-all duration-300 hover:scale-105 font-medium whitespace-nowrap"
             >
               {showForm ? <X className="w-5 h-5" /> : <Plus className="w-5 h-5" />}
               {showForm ? 'Annuler' : 'Nouveau Post'}
@@ -168,7 +168,7 @@ export default function ContentManager() {
         {/* Form */}
         {showForm && (
           <div className="bg-white/80 dark:bg-gray-800/80 backdrop-blur-lg rounded-3xl shadow-xl border border-gray-200 dark:border-gray-700 p-6 md:p-8 animate-slide-up">
-            <h3 className="text-2xl font-bold bg-gradient-to-r from-emerald-600 to-green-600 dark:from-emerald-400 dark:to-green-400 bg-clip-text text-transparent mb-6">
+            <h3 className="text-2xl font-bold bg-gradient-to-r from-orange-600 to-yellow-600 dark:from-orange-400 dark:to-yellow-400 bg-clip-text text-transparent mb-6">
               {editingId ? '✏️ Modifier le post' : '✨ Nouveau post'}
             </h3>
 
@@ -272,7 +272,7 @@ export default function ContentManager() {
               <div className="flex flex-col sm:flex-row gap-3 pt-2">
                 <button
                   type="submit"
-                  className="flex-1 flex items-center justify-center gap-2 px-6 py-4 bg-gradient-to-r from-emerald-500 to-green-500 text-white rounded-2xl hover:shadow-xl transition-all duration-300 hover:scale-105 font-semibold"
+                  className="flex-1 flex items-center justify-center gap-2 px-6 py-4 bg-gradient-to-r from-orange-500 to-yellow-500 text-white rounded-2xl hover:shadow-xl transition-all duration-300 hover:scale-105 font-semibold"
                 >
                   <Save className="w-5 h-5" />
                   {editingId ? 'Mettre à jour' : 'Enregistrer'}
@@ -411,10 +411,10 @@ export default function ContentManager() {
               {publishedPosts.slice(0, 9).map((post) => (
                 <div
                   key={post.id}
-                  className="bg-gradient-to-br from-green-50 to-emerald-50 dark:from-green-900/20 dark:to-emerald-900/20 backdrop-blur-lg rounded-3xl shadow-lg border-2 border-green-200 dark:border-green-800 p-6 hover:shadow-xl transition-all duration-300"
+                  className="bg-gradient-to-br from-green-50 to-yellow-50 dark:from-green-900/20 dark:to-yellow-900/20 backdrop-blur-lg rounded-3xl shadow-lg border-2 border-green-200 dark:border-green-800 p-6 hover:shadow-xl transition-all duration-300"
                 >
                   <div className="flex items-start justify-between mb-4">
-                    <span className="px-4 py-2 rounded-2xl bg-gradient-to-r from-green-500 to-emerald-500 text-white text-sm font-semibold shadow-md">
+                    <span className="px-4 py-2 rounded-2xl bg-gradient-to-r from-green-500 to-yellow-500 text-white text-sm font-semibold shadow-md">
                       {platformEmojis[post.platform]} {post.platform}
                     </span>
                     <button
@@ -447,7 +447,7 @@ export default function ContentManager() {
         {posts.length === 0 && (
           <div className="bg-white/80 dark:bg-gray-800/80 backdrop-blur-lg rounded-3xl shadow-xl border-2 border-dashed border-gray-300 dark:border-gray-600 p-12 md:p-16 text-center">
             <div className="max-w-md mx-auto">
-              <div className="w-20 h-20 bg-gradient-to-br from-emerald-100 to-green-100 dark:from-emerald-900/30 dark:to-green-900/30 rounded-3xl flex items-center justify-center mx-auto mb-6">
+              <div className="w-20 h-20 bg-gradient-to-br from-orange-100 to-yellow-100 dark:from-orange-900/30 dark:to-yellow-900/30 rounded-3xl flex items-center justify-center mx-auto mb-6">
                 <FileText className="w-10 h-10 text-emerald-600 dark:text-emerald-400" />
               </div>
               <h3 className="text-2xl font-bold text-gray-800 dark:text-white mb-3">
@@ -461,7 +461,7 @@ export default function ContentManager() {
                   setShowForm(true);
                   setEditingId(null);
                 }}
-                className="inline-flex items-center gap-2 px-8 py-4 bg-gradient-to-r from-emerald-500 to-green-500 text-white rounded-2xl hover:shadow-xl transition-all duration-300 hover:scale-105 font-semibold"
+                className="inline-flex items-center gap-2 px-8 py-4 bg-gradient-to-r from-orange-500 to-yellow-500 text-white rounded-2xl hover:shadow-xl transition-all duration-300 hover:scale-105 font-semibold"
               >
                 <Plus className="w-5 h-5" />
                 Créer mon premier post
