@@ -17,6 +17,8 @@ import {
   Trash2,
   Edit2,
   MoreVertical,
+  ChevronDown,
+  ChevronUp,
 } from 'lucide-react';
 import { Todo, Post, Goal } from '@/types';
 import {
@@ -33,6 +35,7 @@ export default function DailyPlanner() {
   const [todos, setTodos] = useState<Todo[]>([]);
   const [posts, setPosts] = useState<Post[]>([]);
   const [goals, setGoals] = useState<Goal[]>([]);
+  const [expandedTodos, setExpandedTodos] = useState<Set<string>>(new Set());
 
   useEffect(() => {
     setMounted(true);
@@ -117,6 +120,18 @@ export default function DailyPlanner() {
   const handleToggleSubtask = (todoId: string, subtaskId: string) => {
     toggleSubtask(todoId, subtaskId);
     loadAll();
+  };
+
+  const toggleTodoExpanded = (todoId: string) => {
+    setExpandedTodos((prev) => {
+      const newSet = new Set(prev);
+      if (newSet.has(todoId)) {
+        newSet.delete(todoId);
+      } else {
+        newSet.add(todoId);
+      }
+      return newSet;
+    });
   };
 
   if (!mounted) return null;
@@ -290,35 +305,56 @@ export default function DailyPlanner() {
                                 </p>
                               )}
 
-                              {/* Sous-tâches */}
+                              {/* Sous-tâches avec toggle */}
                               {todo.subtasks && todo.subtasks.length > 0 && (
-                                <div className="mt-3 space-y-2 pl-4 border-l-2 border-orange-200 dark:border-orange-800">
-                                  {todo.subtasks.map((subtask) => (
-                                    <div
-                                      key={subtask.id}
-                                      className="flex items-center gap-2 group/subtask"
-                                    >
-                                      <button
-                                        onClick={() => handleToggleSubtask(todo.id, subtask.id)}
-                                        className="flex-shrink-0"
-                                      >
-                                        {subtask.completed ? (
-                                          <CheckCircle2 className="w-4 h-4 text-green-500" />
-                                        ) : (
-                                          <Circle className="w-4 h-4 text-gray-400 hover:text-orange-500 transition-colors" />
-                                        )}
-                                      </button>
-                                      <span
-                                        className={`text-sm ${
-                                          subtask.completed
-                                            ? 'line-through text-gray-400'
-                                            : 'text-gray-700 dark:text-gray-300'
-                                        }`}
-                                      >
-                                        {subtask.title}
-                                      </span>
+                                <div className="mt-3">
+                                  <button
+                                    onClick={() => toggleTodoExpanded(todo.id)}
+                                    className="flex items-center gap-2 text-sm font-medium text-orange-600 dark:text-orange-400 hover:text-orange-700 dark:hover:text-orange-300 transition-colors mb-2"
+                                  >
+                                    {expandedTodos.has(todo.id) ? (
+                                      <>
+                                        <ChevronUp className="w-4 h-4" />
+                                        Masquer les sous-tâches ({todo.subtasks.length})
+                                      </>
+                                    ) : (
+                                      <>
+                                        <ChevronDown className="w-4 h-4" />
+                                        Voir les sous-tâches ({todo.subtasks.length})
+                                      </>
+                                    )}
+                                  </button>
+
+                                  {expandedTodos.has(todo.id) && (
+                                    <div className="space-y-2 pl-4 border-l-2 border-orange-200 dark:border-orange-800 animate-fade-in">
+                                      {todo.subtasks.map((subtask) => (
+                                        <div
+                                          key={subtask.id}
+                                          className="flex items-center gap-2 group/subtask"
+                                        >
+                                          <button
+                                            onClick={() => handleToggleSubtask(todo.id, subtask.id)}
+                                            className="flex-shrink-0"
+                                          >
+                                            {subtask.completed ? (
+                                              <CheckCircle2 className="w-4 h-4 text-green-500" />
+                                            ) : (
+                                              <Circle className="w-4 h-4 text-gray-400 hover:text-orange-500 transition-colors" />
+                                            )}
+                                          </button>
+                                          <span
+                                            className={`text-sm ${
+                                              subtask.completed
+                                                ? 'line-through text-gray-400'
+                                                : 'text-gray-700 dark:text-gray-300'
+                                            }`}
+                                          >
+                                            {subtask.title}
+                                          </span>
+                                        </div>
+                                      ))}
                                     </div>
-                                  ))}
+                                  )}
                                 </div>
                               )}
 
