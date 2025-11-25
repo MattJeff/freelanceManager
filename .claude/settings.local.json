@@ -18,7 +18,9 @@
       "Bash(for file in components/DailyPlanner.tsx app/page.tsx)",
       "Bash(app/page.tsx)",
       "Bash(lsof:*)",
-      "Bash(xargs kill:*)"
+      "Bash(xargs kill:*)",
+      "Bash(pkill:*)",
+      "Bash(npm run dev:*)"
     ],
     "deny": [],
     "ask": []
